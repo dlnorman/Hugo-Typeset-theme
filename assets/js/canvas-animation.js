@@ -31,7 +31,7 @@ class RetroParticleAnimation {
         this.PARTICLE_DRAG = 0.992;
         this.BULLET_SPEED = 7;
         this.BULLET_LIFETIME = 120;
-        this.SHOOT_COOLDOWN = 90;
+        this.SHOOT_COOLDOWN = 45;
         this.RESPAWN_DELAY = 120; // 2 seconds at 60fps
         this.UFO_SPAWN_CHANCE = 0.001; // Chance per frame to spawn UFO
         this.UFO_SPEED = 0.9;
@@ -96,10 +96,15 @@ class RetroParticleAnimation {
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
-                    // Wait a bit for the CSS to load before updating colors
-                    setTimeout(() => {
+                    // By the time the MutationObserver fires, applyTheme() has already
+                    // removed the old link and appended the new one. If the new stylesheet
+                    // hasn't parsed yet (link.sheet is null), wait for its load event.
+                    const link = document.getElementById('theme-css');
+                    if (link && !link.sheet) {
+                        link.addEventListener('load', () => this.updateColors(), { once: true });
+                    } else {
                         this.updateColors();
-                    }, 100);
+                    }
                 }
             });
         });
@@ -891,18 +896,6 @@ class RetroParticleAnimation {
     updateShipAI(ship) {
         ship.stateTimer--;
         ship.shootCooldown = Math.max(0, ship.shootCooldown - 1);
-        ship.burstCooldown = Math.max(0, ship.burstCooldown - 1);
-
-        // Fire next shot in an active burst
-        if (ship.burstRemaining > 0 && ship.burstCooldown === 0) {
-            this.spawnBullet(ship);
-            ship.burstRemaining--;
-            if (ship.burstRemaining > 0) {
-                ship.burstCooldown = 7; // frames between shots in a burst
-            } else {
-                ship.shootCooldown = this.SHOOT_COOLDOWN; // delay before next burst
-            }
-        }
 
         // Decrease damage flash
         if (ship.damageFlash > 0) ship.damageFlash--;
@@ -963,9 +956,9 @@ class RetroParticleAnimation {
             }
 
             if (shortestTimeToCollision < 90) {
-                // WARNING: collision predicted within ~1.5 seconds — steer clear
+                // WARNING: collision predicted within ~1.5 seconds — nudge clear,
+                // but don't block the state machine so ships can still shoot
                 this.collisionAvoidance(ship, mostDangerousAsteroid);
-                return;
             }
         }
 
@@ -1082,10 +1075,25 @@ class RetroParticleAnimation {
             ship.thrustOn = dist > standoff + 10 && Math.abs(angleDiff) < Math.PI / 4 && Math.random() < 0.3;
         }
 
-        // Start a burst when well-aimed and ready
-        if (Math.abs(angleDiff) < Math.PI / 10 && ship.shootCooldown === 0 && ship.burstRemaining === 0) {
-            ship.burstRemaining = Math.floor(Math.random() * 5) + 1;
-            ship.burstCooldown = 0; // fire first shot immediately on next tick
+        // Burst firing: either continue an active burst, or initiate a new one
+        if (ship.burstRemaining > 0) {
+            // Mid-burst: tick down and fire next shot when ready
+            ship.burstCooldown = Math.max(0, ship.burstCooldown - 1);
+            if (ship.burstCooldown === 0) {
+                this.spawnBullet(ship);
+                ship.burstRemaining--;
+                if (ship.burstRemaining > 0) {
+                    ship.burstCooldown = 7; // frames between burst shots
+                } else {
+                    ship.shootCooldown = this.SHOOT_COOLDOWN; // full cooldown after burst ends
+                }
+            }
+        } else if (Math.abs(angleDiff) < Math.PI / 6 && ship.shootCooldown === 0) {
+            // Aimed and ready — fire first shot and queue the rest of the burst
+            const burstSize = Math.floor(Math.random() * 3) + 3; // 3–5 shots
+            this.spawnBullet(ship);
+            ship.burstRemaining = burstSize - 1;
+            ship.burstCooldown = 7;
         }
     }
 
@@ -1523,55 +1531,59 @@ class RetroParticleAnimation {
     }
 
     animate(staticOnly = false) {
-        // Clear canvas with background color
-        this.ctx.fillStyle = this.colors.bg;
-        this.ctx.fillRect(0, 0, this.width, this.height);
+        try {
+            // Clear canvas with background color
+            this.ctx.fillStyle = this.colors.bg;
+            this.ctx.fillRect(0, 0, this.width, this.height);
 
-        // Draw connections between particles
-        this.drawConnections();
+            // Draw connections between particles
+            this.drawConnections();
 
-        this.updateParticles();
-        this.particles.forEach(particle => this.drawParticle(particle));
+            this.updateParticles();
+            this.particles.forEach(particle => this.drawParticle(particle));
 
-        // Asteroids game elements only visible in terminal theme
-        if (this.currentTheme === 'terminal') {
-            // Update interactions
-            this.shipParticleInteraction();
-            this.asteroidParticleInteraction();
-            this.shipAsteroidInteraction();
-            this.shipShipCollision();
+            // Asteroids game elements only visible in terminal theme
+            if (this.currentTheme === 'terminal') {
+                // Update interactions
+                this.shipParticleInteraction();
+                this.asteroidParticleInteraction();
+                this.shipAsteroidInteraction();
+                this.shipShipCollision();
 
-            // Update respawns
-            this.updateRespawns();
+                // Update respawns
+                this.updateRespawns();
 
-            // Update and draw asteroids
-            this.updateAsteroids();
-            this.asteroids.forEach(asteroid => this.drawAsteroid(asteroid));
+                // Update and draw asteroids
+                this.updateAsteroids();
+                this.asteroids.forEach(asteroid => this.drawAsteroid(asteroid));
 
-            // Update and draw ships
-            this.updateShips();
-            this.ships.forEach(ship => this.drawShip(ship));
+                // Update and draw ships
+                this.updateShips();
+                this.ships.forEach(ship => this.drawShip(ship));
 
-            // Update and draw UFO
-            this.updateUFO();
-            this.drawUFO();
+                // Update and draw UFO
+                this.updateUFO();
+                this.drawUFO();
 
-            // Update and draw projectiles
-            this.updateProjectiles();
-            this.projectiles.forEach(proj => this.drawProjectile(proj));
+                // Update and draw projectiles
+                this.updateProjectiles();
+                this.projectiles.forEach(proj => this.drawProjectile(proj));
 
-            // Update and draw explosions
-            this.updateExplosions();
-            this.explosions.forEach(exp => this.drawExplosion(exp));
+                // Update and draw explosions
+                this.updateExplosions();
+                this.explosions.forEach(exp => this.drawExplosion(exp));
+            }
+
+            // Increment time
+            this.time++;
+        } catch (e) {
+            console.warn('Canvas animation draw error (theme transition?):', e);
         }
-
-        // Increment time
-        this.time++;
 
         // Stop after first frame if reduced motion is preferred
         if (staticOnly) return;
 
-        // Continue animation
+        // Continue animation — outside try/catch so a draw error never kills the loop
         this.animationFrame = requestAnimationFrame(() => this.animate());
     }
 
