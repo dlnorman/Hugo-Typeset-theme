@@ -1,0 +1,34 @@
+{{ $url := printf "https://darcynorman.net/bookmarks/recent.php?limit=25&v=%d" now.Unix }}
+{{ with try (resources.GetRemote $url) }}
+  {{ with .Err }}
+    <p>Error fetching bookmarks: {{ . }}</p>
+  {{ else with .Value }}
+    {{ $bookmarks := . | transform.Unmarshal }}
+    <div class="recent-bookmarks">
+      {{ range $bookmarks }}
+        <article class="bookmark-item">
+          <h4 class="bookmark-title">
+            <a href="{{ .url }}" target="_blank" rel="noopener">{{ .title }}</a>
+          </h4>
+          <div class="bookmark-content">
+            {{ if .screenshot }}
+            <div class="bookmark-screenshot">
+              <img src="{{ .screenshot }}" alt="{{ .title }}">
+            </div>
+            {{ end }}
+            {{ if .description }}
+            <div class="bookmark-description">
+              {{ .description | markdownify }}
+            </div>
+            {{ end }}
+            <div class="bookmark-meta">
+              <time datetime="{{ .created_at }}">{{ .created_at }}</time>
+              {{ if .tags }} • {{ .tags }}{{ end }}
+              {{ if .archive_url }} • <a href="{{ .archive_url }}" target="_blank">Archive</a>{{ end }}
+            </div>
+          </div>
+        </article>
+      {{ end }}
+    </div>
+  {{ end }}
+{{ end }}

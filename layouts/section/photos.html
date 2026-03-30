@@ -1,0 +1,70 @@
+{{ define "main" }}
+<div class="photos-content">
+  <header class="photos-header">
+    <h1>{{- .Title -}}</h1>
+    {{- with .Description -}}
+      <div class="photos-description">{{- . -}}</div>
+    {{- end -}}
+  </header>
+
+  {{- if .Content -}}
+    <div class="content">
+      {{- .Content -}}
+    </div>
+  {{- end -}}
+
+  {{- $paginator := .Paginate .Pages 21 -}}
+  
+  <div class="photos-grid">
+    {{- range $paginator.Pages -}}
+      <div class="photo-item">
+        <a href="{{- .RelPermalink -}}" class="photo-link">
+          {{- $firstImage := "" -}}
+          {{- if .Params.image -}}
+            {{- $firstImage = .Params.image -}}
+          {{- else -}}
+            {{- $imgRegex := findRE "<img src=\"([^\"]+)\"" .Content 1 -}}
+            {{- if gt (len $imgRegex) 0 -}}
+              {{- $firstImage = index $imgRegex 0 | replaceRE "<img src=\"([^\"]+)\"" "$1" | strings.TrimSpace -}}
+            {{- end -}}
+          {{- end -}}
+          
+          {{- if $firstImage -}}
+            <div class="photo-thumbnail" style="background-image: url('{{- $firstImage | safeURL -}}')"></div>
+          {{- else -}}
+            <div class="photo-thumbnail photo-no-image">
+              <span>{{- .Title -}}</span>
+            </div>
+          {{- end -}}
+          
+          <div class="photo-overlay">
+            <h3 class="photo-title">{{- .Title -}}</h3>
+            <time datetime="{{- .Date.Format "2006-01-02T15:04:05Z07:00" -}}">
+              {{- .Date.Format "Jan 2, 2006" -}}
+            </time>
+          </div>
+        </a>
+      </div>
+    {{- end -}}
+  </div>
+  
+  {{ if gt $paginator.TotalPages 1 }}
+    <div class="pagination">
+      {{ if $paginator.HasPrev }}
+        <a href="{{- $paginator.Prev.URL -}}" class="pagination-link prev">← Previous</a>
+      {{ else }}
+        <span class="pagination-link prev disabled">← Previous</span>
+      {{ end }}
+      
+      <span class="pagination-info">Page {{ $paginator.PageNumber }} of {{ $paginator.TotalPages }}</span>
+      
+      {{ if $paginator.HasNext }}
+        <a href="{{- $paginator.Next.URL -}}" class="pagination-link next">Next →</a>
+      {{ else }}
+        <span class="pagination-link next disabled">Next →</span>
+      {{ end }}
+    </div>
+  {{ end }}
+
+</div>
+{{ end }}

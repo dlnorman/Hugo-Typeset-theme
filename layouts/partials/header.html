@@ -1,0 +1,60 @@
+<header>
+    <div class="site-header">
+        <div class="logo">
+            <a href="{{ .Site.BaseURL }}" aria-label="D'Arcy Norman, PhD">
+                <svg class="site-logo-mark"
+                     viewBox="0 0 440 260"
+                     width="88" height="52"
+                     aria-hidden="true"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="
+                        M40,0 L40,260
+                        L55,260
+                        C100,260 180,245 250,210
+                        C330,170 370,140 375,130
+                        C380,120 380,118 375,108
+                        C360,88 300,55 230,30
+                        C170,5 100,0 55,0 Z
+                        M72,32 L72,228
+                        C110,230 170,220 228,195
+                        C290,168 325,145 335,130
+                        C340,123 340,117 335,110
+                        C320,92 275,68 218,48
+                        C168,28 110,26 72,32 Z
+                    " fill="currentColor"/>
+                    <path d="
+                        M395,8
+                        C400,2 410,0 414,6
+                        C418,14 412,40 404,60
+                        C400,68 396,68 394,62
+                        C390,48 390,16 395,8 Z
+                    " fill="currentColor"/>
+                </svg>
+                <span class="site-title-text" aria-hidden="true">Arcy Norman</span>
+                <span class="site-title-cred" aria-hidden="true">PhD</span>
+            </a>
+        </div>
+        
+        <!-- Hamburger menu button (only visible on mobile) -->
+        <button class="hamburger-button" aria-label="Toggle menu" aria-expanded="false">
+            <span class="hamburger-icon"></span>
+        </button>
+        
+        <div class="theme-switcher">
+            <button class="theme-menu-toggle" id="theme-menu-toggle" aria-label="Select theme" aria-expanded="false" aria-haspopup="true">
+                <span id="theme-current-icon">🎨</span>
+                <span class="theme-menu-caret" aria-hidden="true">▾</span>
+            </button>
+            <ul class="theme-menu" id="theme-menu" role="menu">
+                <li role="none"><button id="light-mode" class="theme-option" role="menuitem">☀️ Light</button></li>
+                <li role="none"><button id="dark-mode" class="theme-option" role="menuitem">🌙 Dark</button></li>
+                <li role="none"><button id="terminal-mode" class="theme-option" role="menuitem">💻 Terminal</button></li>
+                <li role="none"><button id="midcentury-mode" class="theme-option" role="menuitem">✦ Mid-century</button></li>
+                <li role="none"><button id="1bit-mode" class="theme-option" role="menuitem">◑ 1-bit</button></li>
+                <li role="none"><button id="foothills-mode" class="theme-option" role="menuitem">⛰️ Foothills</button></li>
+                <li role="none"><button id="1975-mode" class="theme-option" role="menuitem">🪩 1975</button></li>
+            </ul>
+        </div>
+    </div>
+    {{ partialCached "nav.html" . .RelPermalink}}
+</header>

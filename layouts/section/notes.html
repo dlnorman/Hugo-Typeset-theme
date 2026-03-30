@@ -1,0 +1,28 @@
+{{ define "main" }}
+<article class="single-content">
+  <div class="content-header">
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}
+      <div class="list-description">{{ . }}</div>
+    {{ end }}
+  </div>
+
+  {{ if .Content }}
+    <div class="content well">
+      {{ .Content }}
+    </div>
+  {{ end }}
+
+	<div class="list-container container">
+          {{ range .Pages.GroupByDate "2006" }}
+			<h3>{{ .Key }}</h3>
+			<ul class="contents">
+		    {{ range (first 1000 .Pages.ByDate).Reverse }}
+              <li><a href="{{.Permalink}}">{{.Date.Format "2006-01-02"}} | {{.Title}}</a></li>
+	          {{ end }}
+			</ul>
+		{{ end }}
+	</div>
+
+</article>
+{{ end }}

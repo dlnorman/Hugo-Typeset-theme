@@ -1,0 +1,23 @@
+{{- define "main" -}}
+<section class="list-page main-content">
+    <header>
+        <h1>{{- .Title -}}</h1>
+        {{- with .Description -}}
+            <p>{{- . -}}</p>
+        {{- end -}}
+    </header>
+    
+    <div class="post-list">
+        {{- range .Paginator.Pages -}}
+        <article class="list-item">
+            <h2><a href="{{ .RelPermalink }}">{{- .Title -}}</a></h2>
+            <time datetime="{{- .Date.Format "2006-01-02" -}}">{{- .Date.Format "January 2, 2006" -}}</time>
+            <p>{{- .Summary -}}</p>
+            <a href="{{- .RelPermalink -}}" class="read-more-btn" aria-label="Read the full article: {{- .Title -}}">Read More</a>
+        </article>
+        {{- end -}}
+        
+	  {{- partial "pagination.html" . -}}
+    </div>
+</section>
+{{- end -}}

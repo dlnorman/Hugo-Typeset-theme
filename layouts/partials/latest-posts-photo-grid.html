@@ -1,0 +1,10 @@
+<div class="latest-posts">
+    {{- range first 10 (where site.RegularPages "Type" "in" site.Params.mainSections) -}}
+    <article class="post-item">
+        <h2><a href="{{- .RelPermalink -}}">{{- .Title -}}</a></h2>
+        <time>{{- .Date.Format "January 2, 2006" -}}</time>
+        {{- with .Summary -}}<p>{{- . | truncate 120 -}}</p>{{- end -}}
+        <a href="{{- .RelPermalink -}}" class="read-more-btn" aria-label="Read the full article: {{- .Title -}}">Read More</a>
+    </article>
+    {{ end }}
+</div>

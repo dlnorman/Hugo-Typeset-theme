@@ -1,0 +1,80 @@
+{{ define "main" }}
+<div class="tags-content">
+    <header class="tags-header">
+        <h1>{{- .Title -}}</h1>
+        {{- with .Description -}}
+        <div class="tags-description">{{ . }}</div>
+        {{- end -}}
+    </header>
+
+    <div class="term-container">
+        {{- $currentTag := lower .Title -}} <!-- Normalize the current tag to lowercase -->
+        {{- $synonyms := hugo.Data.tag_synonyms.tags -}}
+        {{- $primaryTag := $currentTag -}}
+        {{- $allTags := slice $currentTag -}}
+        {{- $hasSynonyms := false -}} <!-- Flag to check if current tag has synonyms -->
+
+        <!-- Check if the current tag is a primary tag or matches any synonyms -->
+        {{- if $synonyms -}}
+        {{- range $primary, $synonymArray := $synonyms -}}
+        {{- $primaryLower := lower $primary -}}
+        {{- $synonymArrayLower := apply $synonymArray "lower" "." -}} <!-- Lowercase all synonyms -->
+
+        <!-- Check if the current tag matches the primary or any synonym -->
+        {{- if or (eq $primaryLower $currentTag) (in $synonymArrayLower $currentTag) -}}
+        {{- $primaryTag = $primaryLower -}}
+        {{- $allTags = $allTags | append $primaryLower -}}
+        {{- $allTags = $allTags | append $synonymArrayLower -}}
+        {{- $hasSynonyms = true -}} <!-- Set flag to true if synonyms are found -->
+        {{- break -}}
+        {{- end -}}
+        {{- end -}}
+        {{- end -}}
+
+        <!-- Remove duplicates and ensure all tags are lowercased -->
+        {{- $uniqueTags := dict -}}
+        {{- range $allTags -}}
+        {{- $uniqueTags = merge $uniqueTags (dict . true) -}}
+        {{- end -}}
+        {{- $allTags = slice -}}
+        {{- range $key, $value := $uniqueTags -}}
+        {{- $allTags = $allTags | append $key -}}
+        {{- end -}}
+
+        <!-- Conditionally display tags checked for filtering if synonyms are present -->
+        {{- if $hasSynonyms -}}
+        <div class="tag-synonyms">
+            <p>Synonyms for&nbsp;{{- .Title -}}:&nbsp;
+                <!-- 			<ul class="tag-synonyms-list"> -->
+                {{- range $allTags -}}
+                {{- . -}}&nbsp;| <!-- Ensure all displayed tags are consistently lowercased -->
+                {{- end -}}
+            </p>
+            <!-- 			</ul> -->
+        </div>
+        {{- end -}}
+
+        <!-- Manually check each page's tags for case-insensitive intersection -->
+        {{- $relatedPages := slice -}}
+        {{- range .Site.Pages -}}
+        {{- $pageTags := apply .Params.tags "lower" "." -}} <!-- Lowercase the tags of the page -->
+        {{- if gt (len (intersect $pageTags $allTags)) 0 -}}
+        {{- $relatedPages = $relatedPages | append . -}}
+        {{- end -}}
+        {{- end -}}
+
+        <!-- Display the list of pages -->
+        <!--     <h2>Posts Tagged:&nbsp;{{- .Title -}}</h2> -->
+        {{- if gt (len $relatedPages) 0 -}}
+        <ul>
+            {{- range $relatedPages -}}
+            <li><a href="{{- .Permalink -}}">{{.Date.Format "2006-01-02"}}&nbsp;|&nbsp;{{- .Title -}}</a></li>
+            {{- end -}}
+        </ul>
+        {{- else -}}
+        <p>No posts found for this tag.</p>
+        {{- end -}}
+
+    </div>
+</div>
+{{- end -}}

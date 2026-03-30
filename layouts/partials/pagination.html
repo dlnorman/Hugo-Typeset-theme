@@ -1,0 +1,67 @@
+{{ if gt .Paginator.TotalPages 1 }}
+<div class="pagination">
+  {{ if .Paginator.HasPrev }}
+    <a href="{{ .Paginator.First.URL }}" class="pagination-link first" aria-label="First page">
+      First
+    </a>
+    <a href="{{ .Paginator.Prev.URL }}" class="pagination-link prev" aria-label="Previous page">
+      Previous
+    </a>
+  {{ else }}
+    <span class="pagination-link first disabled">First</span>
+    <span class="pagination-link prev disabled">Previous</span>
+  {{ end }}
+  
+  <div class="pagination-numbers">
+    {{ $paginator := .Paginator }}
+    {{ $pageCount := $paginator.TotalPages }}
+    {{ $currentPageNumber := $paginator.PageNumber }}
+    
+    {{ $lower := sub $currentPageNumber 2 }}
+    {{ $upper := add $currentPageNumber 2 }}
+    
+    {{ if lt $lower 1 }}
+      {{ $lower = 1 }}
+      {{ if ge $pageCount 5 }}
+        {{ $upper = 5 }}
+      {{ else }}
+        {{ $upper = $pageCount }}
+      {{ end }}
+    {{ else if gt $upper $pageCount }}
+      {{ $upper = $pageCount }}
+      {{ if ge $pageCount 5 }}
+        {{ $lower = sub $pageCount 4 }}
+        {{ if lt $lower 1 }}
+          {{ $lower = 1 }}
+        {{ end }}
+      {{ else }}
+        {{ $lower = 1 }}
+      {{ end }}
+    {{ end }}
+    
+    {{ range $paginator.Pagers }}
+      {{ if and (ge .PageNumber $lower) (le .PageNumber $upper) }}
+        {{ if eq .PageNumber $currentPageNumber }}
+          <span class="pagination-number active" aria-current="page">{{ .PageNumber }}</span>
+        {{ else }}
+          <a href="{{ .URL }}" class="pagination-number">
+            {{ .PageNumber }}
+          </a>
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  </div>
+  
+  {{ if .Paginator.HasNext }}
+    <a href="{{ .Paginator.Next.URL }}" class="pagination-link next" aria-label="Next page">
+      Next
+    </a>
+    <a href="{{ .Paginator.Last.URL }}" class="pagination-link last" aria-label="Last page">
+      Last
+    </a>
+  {{ else }}
+    <span class="pagination-link next disabled">Next</span>
+    <span class="pagination-link last disabled">Last</span>
+  {{ end }}
+</div>
+{{ end }}

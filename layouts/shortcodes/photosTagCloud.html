@@ -1,0 +1,27 @@
+<!-- layouts/shortcodes/photosTagCloud.html -->
+{{ $photosPages := where .Site.RegularPages "Section" "photos" }}
+
+<!-- Get all tags used in photos section -->
+{{ $tagMap := dict }}
+{{ range $photosPages }}
+  {{ range .Params.tags }}
+    {{ $tag := . }}
+    {{ $count := 1 }}
+    {{ if isset $tagMap $tag }}
+      {{ $count = add (index $tagMap $tag) 1 }}
+    {{ end }}
+    {{ $tagMap = merge $tagMap (dict $tag $count) }}
+  {{ end }}
+{{ end }}
+
+<div class="tag-cloud">
+<div id="tag-cloud" style="padding: 5px 15px">
+  {{ range $tag, $count := $tagMap }}
+    {{ $fontSize := add 12 (mul 3 (math.Log $count)) }}
+    {{ $tagURL := printf "/tags/%s" (urlize $tag) }}
+    <a href="{{ $tagURL }}" style="font-size: {{ $fontSize }}px">
+      {{ $tag }}
+    </a>&nbsp;
+  {{ end }}
+</div>
+</div>

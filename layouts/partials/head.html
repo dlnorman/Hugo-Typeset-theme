@@ -1,0 +1,81 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} - {{ .Site.Title }}{{ end }}</title>
+<meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Summary }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}{{ end }}">
+
+<!-- Base CSS -->
+{{- $mainCSS := resources.Get "css/main.css" | resources.ExecuteAsTemplate "css/main.css" . | resources.Minify | resources.Fingerprint -}}
+<link rel="stylesheet" href="{{ $mainCSS.RelPermalink }}">
+
+<!-- Theme CSS: inject correct stylesheet synchronously to prevent FOUC -->
+{{- $lightCSS := resources.Get "css/light.css" | resources.Minify | resources.Fingerprint -}}
+{{- $darkCSS := resources.Get "css/dark.css" | resources.Minify | resources.Fingerprint -}}
+{{- $terminalCSS := resources.Get "css/terminal.css" | resources.Minify | resources.Fingerprint -}}
+{{- $midcenturyCSS := resources.Get "css/midcentury.css" | resources.Minify | resources.Fingerprint -}}
+{{- $onebitCSS := resources.Get "css/1bit.css" | resources.Minify | resources.Fingerprint -}}
+{{- $foothillsCSS := resources.Get "css/foothills.css" | resources.Minify | resources.Fingerprint -}}
+{{- $seventiesCSS := resources.Get "css/seventies.css" | resources.Minify | resources.Fingerprint -}}
+<script>
+  window.themeCSS = {
+    light: "{{- $lightCSS.RelPermalink -}}",
+    dark: "{{- $darkCSS.RelPermalink -}}",
+    terminal: "{{- $terminalCSS.RelPermalink -}}",
+    midcentury: "{{- $midcenturyCSS.RelPermalink -}}",
+    "1-bit": "{{- $onebitCSS.RelPermalink -}}",
+    foothills: "{{- $foothillsCSS.RelPermalink -}}",
+    "1975": "{{- $seventiesCSS.RelPermalink -}}",
+  };
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (!theme) {
+      theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    document.documentElement.setAttribute('data-theme', theme);
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.id = 'theme-css';
+    link.href = window.themeCSS[theme] || window.themeCSS.light;
+    document.head.appendChild(link);
+  })();
+</script>
+
+<!-- <link rel="icon" type="image/x-icon" href="/images/favicon.ico"> -->
+
+<!-- Favicons -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="shortcut icon" href="/favicon.ico">
+
+<!-- Apple -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Android / PWA -->
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#2C2C2A">
+
+<!-- Windows -->
+<meta name="msapplication-TileColor" content="#F5F0E8">
+<meta name="msapplication-config" content="/browserconfig.xml">
+
+<!-- Open Graph -->
+<meta property="og:image" content="{{ .Site.BaseURL }}og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{{ .Site.BaseURL }}twitter-card-wide.png">
+
+
+
+{{- range .AlternativeOutputFormats -}}
+    {{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
+{{- end -}}
+
+<!-- flocking behaviour -->
+{{- if site.Params.showFlock }}
+	{{- $flockingCSS := resources.Get "css/flock.css" | resources.Minify | resources.Fingerprint -}}
+	<link rel="stylesheet" href="{{- $flockingCSS.RelPermalink -}}" as="style" >
+{{- end -}}

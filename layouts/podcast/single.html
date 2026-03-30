@@ -1,0 +1,110 @@
+{{ define "main" }}
+<article class="podcast-episode">
+  <header class="episode-header">
+    {{ if .Params.episode_image }}
+    <div class="episode-artwork">
+      <img src="{{ .Params.episode_image }}" alt="{{ .Title }} artwork" />
+    </div>
+    {{ end }}
+    
+    <div class="episode-info">
+      <div class="episode-meta">
+        {{ if .Params.episode }}
+        <span class="episode-number">Episode {{ .Params.episode }}</span>
+        {{ end }}
+        {{ if .Params.explicit }}{{ if eq .Params.explicit "yes" }}
+        <span class="explicit-tag">Explicit</span>
+        {{ end }}{{ end }}
+      </div>
+      
+      <h1 class="episode-title">{{ .Title }}</h1>
+      
+      <div class="episode-details">
+        <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+          {{ .Date.Format "January 2, 2006" }}
+        </time>
+        {{ if .Params.podcast_duration }}
+        <span class="duration">{{ .Params.podcast_duration }}</span>
+        {{ end }}
+        {{ if .Params.podcast_bytes }}
+          <span class="file-size">{{ div .Params.podcast_bytes 1048576.0 | printf "%.1f" }} MB</span>
+        {{ end }}
+      </div>
+    </div>
+  </header>
+
+  {{ if .Params.podcast_file }}
+  <div class="audio-player">
+    <audio controls preload="metadata">
+      <source src="{{ .Params.podcast_file }}" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+    
+    <div class="player-controls">
+      <a href="{{ .Params.podcast_file }}" download class="download-btn">
+        Download Episode
+      </a>
+      {{ if .Params.podcast_bytes }}
+      <span class="file-info">
+        MP3 • {{ .Params.podcast_duration }} • {{ div .Params.podcast_bytes 1000000 }} MB
+      </span>
+      {{ end }}
+    </div>
+  </div>
+  {{ end }}
+
+  {{ if .Description }}
+  <div class="episode-description">
+    <h2>About This Episode</h2>
+    <blockquote>{{ .Description | markdownify }}</blockquote>
+  </div>
+  {{ end }}
+
+  <div class="episode-content">
+    {{ .Content }}
+  </div>
+
+  <footer class="episode-footer">
+
+    {{ if .Site.Params.showRelatedPosts }}
+    	{{ partial "related-posts.html" . }}
+    {{ end }}
+
+
+    {{ partial "post-tags.html" . }}
+
+    {{ if .Params.categories }}
+    <div class="episode-categories">
+      <h3>Categories</h3>
+      <ul class="category-list">
+        {{ range .Params.categories }}
+        <li><a href="{{ "/categories/" | relURL }}{{ . | urlize }}">{{ . }}</a></li>
+        {{ end }}
+      </ul>
+    </div>
+    {{ end }}
+	
+	<!-- custom comments go here -->
+	{{ if ne .Params.comments false }}
+		{{ partial "comments.html" . }}
+	{{ end }}
+	
+
+    <div class="episode-navigation">
+      {{ with .NextInSection }}
+      <a href="{{ .Permalink }}" class="nav-next">
+        <span class="nav-label">Next Episode</span>
+        <span class="nav-title">{{ .Title }}</span>
+      </a>
+      {{ end }}
+      
+      {{ with .PrevInSection }}
+      <a href="{{ .Permalink }}" class="nav-prev">
+        <span class="nav-label">Previous Episode</span>
+        <span class="nav-title">{{ .Title }}</span>
+      </a>
+      {{ end }}
+    </div>
+  </footer>
+</article>
+{{ end }}

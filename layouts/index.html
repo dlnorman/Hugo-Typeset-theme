@@ -1,0 +1,36 @@
+{{ define "main" }}
+<section class="homepage">
+<!-- 
+    <div class="intro">
+        <h1>{{ .Site.Title }}</h1>
+        {{ with .Site.Params.description }}
+            <p>{{ . }}</p>
+        {{ end }}
+    </div>
+ -->
+
+  {{- if .Content -}}
+    <div class="home-page-content intro">
+      {{- .Content -}}
+    </div>
+  {{- end -}}
+
+    <div class="content-grid-full">
+        <!-- First column (1/3 width) -->
+<!-- 
+        <div class="grid-item">
+            <h2>Latest Photos</h2>
+            {{ partial "latest-photos.html" . }}
+        </div>
+ -->
+        
+        <!-- Second column (2/3 width) with both posts and asides -->
+        <div class="full-column">
+            <div class="grid-item">
+                {{ partial "latest-posts-cards.html" . }}
+            </div>
+            
+        </div>
+    </div>
+</section>
+{{ end }}

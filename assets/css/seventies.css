@@ -1,0 +1,68 @@
+/* ============================================
+   1975 THEME
+   NASA worm · OMNI magazine · BYTE #1 · Elton John on TIME
+   Deep midnight navy · NASA red · Clean newsprint white
+   High-contrast graphic design era
+   ============================================ */
+
+html[data-theme="1975"] {
+    --page-bg-colour: #0e1a3a;       /* deep midnight navy — OMNI covers, NASA space */
+    --bg-colour: #f6f4ee;            /* warm newsprint white — BYTE magazine */
+    --text-colour: #0a0a10;          /* near-black */
+    --text-colour-light: #44444e;    /* medium gray */
+    --link-colour: #cc2800;          /* NASA worm red */
+    --link-hover-colour: #e08000;    /* Elton John TIME cover gold */
+    --border-colour: #cc2800;        /* NASA red borders */
+    --accent-color: #cc2800;         /* NASA red accent */
+    --accent-colour: #cc2800;        /* NASA red accent */
+    --hover-bg-colour: #8c1c00;      /* dark red hover — keeps white text readable */
+    --code-bg-colour: #edeae0;       /* off-white code block */
+    --nav-link-colour: #0a0a10;      /* near-black nav */
+    --nav-link-hover-colour: #cc2800; /* NASA red — readable on light nav background */
+    --dropdown-bg-colour: #f6f4ee;   /* newsprint dropdown */
+    --tag-bg-colour: #cc2800;        /* NASA red tag */
+    --tag-text-colour: #f6f4ee;      /* newsprint on red */
+    --bg-secondary: #edeae0;         /* off-white secondary */
+    --text-secondary: #44444e;       /* medium gray secondary */
+
+    color-scheme: light;
+}
+
+/* Dropdown menu items: white text on dark red hover */
+html[data-theme="1975"] .dropdown-menu a:hover,
+html[data-theme="1975"] .dropdown-menu a:focus {
+    color: #f6f4ee;
+    background-color: #8c1c00;
+}
+
+/* Photo Gallery Styles */
+html[data-theme="1975"] .photo-item {
+    border-radius: 0;
+    box-shadow: 0 3px 10px rgba(10, 10, 16, 0.2);
+}
+
+html[data-theme="1975"] .photo-item:hover {
+    box-shadow: 0 8px 20px rgba(10, 10, 16, 0.35);
+}
+
+html[data-theme="1975"] .photo-title,
+html[data-theme="1975"] .photo-overlay time {
+    color: #f6f4ee !important;
+    text-shadow: 1px 1px 3px rgba(10, 10, 16, 0.9) !important;
+}
+
+/* Search Styles */
+html[data-theme="1975"] .search-box-container {
+    border-radius: 0;
+    box-shadow: 0 4px 10px rgba(10, 10, 16, 0.1);
+}
+
+html[data-theme="1975"] .search-box-container:focus-within {
+    box-shadow: 0 6px 15px rgba(10, 10, 16, 0.18);
+}
+
+html[data-theme="1975"] .search-input,
+html[data-theme="1975"] #book-search-input {
+    border-radius: 0;
+    padding: 1em;
+}

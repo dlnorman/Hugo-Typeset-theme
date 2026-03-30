@@ -1,0 +1,5 @@
+<ul>
+{{ range where .Site.Pages "Section" .Page.Section }}
+  <li><a href="{{ .URL }}">{{ .Title }}</a></li>
+{{ end }}
+</ul>

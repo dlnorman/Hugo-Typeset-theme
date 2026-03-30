@@ -1,0 +1,37 @@
+{{- $synonyms := hugo.Data.tag_synonyms.tags -}}
+{{- if .Params.tags -}}
+<div class="article-tags tags">
+<ul aria-label="Tags">
+<!-- <span>Tags:</span> -->
+{{- range .Params.tags -}}
+  {{- $tag := lower . -}}
+  {{- $primaryTag := "" -}}
+
+  {{- range $primary, $synonymArray := $synonyms -}}
+    {{- $primaryLower := lower $primary -}}
+    {{- $found := false -}}
+
+    {{- range $synonymArray -}}
+      {{- $synonym := lower . -}}
+      {{- if eq $tag $synonym -}}
+        {{- $primaryTag = $primaryLower -}}
+        {{- $found = true -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- if $found -}}
+      {{- break -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if $primaryTag -}}
+    <!-- Use the primary tag found in the synonyms map -->
+    <li><a href="/tags/{{- $primaryTag | urlize -}}">{{- $primaryTag -}}</a></li>
+  {{- else -}}
+    <!-- Use the tag as-is if no primary tag is found -->
+    <li><a href="/tags/{{- $tag | urlize -}}">{{- . -}}</a></li>
+  {{- end -}}
+{{- end -}}
+</ul>
+</div>
+{{- end -}}

@@ -1,0 +1,59 @@
+/* ============================================
+   FOOTHILLS THEME
+   Fixed light palette — no automatic dark variant
+   ============================================ */
+
+html[data-theme="foothills"] {
+	--page-bg-colour: #a3d0d9;
+	--bg-colour: #e4e3db;
+	--text-colour: #241514;
+	--text-colour-light: #35211c;
+	--link-colour: #414e5e;
+	--link-hover-colour: #414e5e;
+	--border-colour: #c89d7f;
+	--accent-color: #593019;
+	--accent-colour: #593019;
+	--hover-bg-colour: #0186b4;
+	--code-bg-colour: #b0856d;
+	--nav-link-colour: #414e5e;
+	--nav-link-hover-colour: #414e5e;
+	--dropdown-bg-colour: #7dc5d7;
+	--tag-bg-colour: #ddb08c;
+	--tag-text-colour: #402e2a;
+	--bg-secondary: #a3d0d9;
+	--text-secondary: #5a3c31;
+	
+    color-scheme: light;
+}
+
+/* Photo Gallery Styles */
+html[data-theme="foothills"] .photo-item {
+    border-radius: 0;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="foothills"] .photo-item:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+html[data-theme="foothills"] .photo-title,
+html[data-theme="foothills"] .photo-overlay time {
+    color: #ffffff !important;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Search Styles */
+html[data-theme="foothills"] .search-box-container {
+    border-radius: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="foothills"] .search-box-container:focus-within {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="foothills"] .search-input,
+html[data-theme="foothills"] #book-search-input {
+    border-radius: 0;
+    padding: 1em;
+}

@@ -1,0 +1,16 @@
+{{ if .Params.series }}
+  {{ range (.GetTerms "series") }}
+    {{ $seriesPages := .Pages.ByDate }}
+    {{ $total := len $seriesPages }}
+    {{ $position := 0 }}
+    {{ range $i, $page := $seriesPages }}
+      {{ if eq $page.Permalink $.Permalink }}
+        {{ $position = add $i 1 }}
+      {{ end }}
+    {{ end }}
+    <p class="series-indicator">
+      Part {{ $position }} of {{ $total }} in the
+      <a href="{{ .Permalink }}">{{ .Title }}</a> series.
+    </p>
+  {{ end }}
+{{ end }}

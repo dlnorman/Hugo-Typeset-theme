@@ -1,0 +1,35 @@
+{{ define "main" }}
+<h1>Access Denied</h1>
+
+<p>You don't have permission to view this page — it may be private, restricted, or protected. If you think that's a mistake, feel free to <a href="/contact/">get in touch</a>.</p>
+
+<h2>Search</h2>
+
+<form action="/search/" method="get" style="display:flex;gap:0.5rem;margin-bottom:1.5rem;">
+  <input type="text" name="q" placeholder="Search the site…" style="flex:1;padding:0.4rem 0.6rem;font-size:1rem;" autofocus />
+  <button type="submit" style="padding:0.4rem 0.8rem;font-size:1rem;">Search</button>
+</form>
+
+<h2>Jump to a section</h2>
+
+<ul>
+  <li><a href="/posts/">Blog Posts</a> — longer writing on edtech, learning design, and technology</li>
+  <li><a href="/notes/">Notes</a> — shorter, quicker thoughts</li>
+  <li><a href="/asides/">Asides</a> — links and brief commentary</li>
+  <li><a href="/reflections/">Weekly Reflections</a> — end-of-week roundups</li>
+  <li><a href="/photos/">Photos</a> — photography</li>
+  <li><a href="/podcast/">Podcast</a> — audio conversations</li>
+  <li><a href="/bookmarks/">Bookmarks</a> — things worth saving</li>
+  <li><a href="/archives/">Archives</a> — everything, sorted by date</li>
+</ul>
+
+<h2>Other options</h2>
+
+<ul>
+  <li><a href="/">Home</a> — start fresh from the beginning</li>
+  <li><a href="/about/">About</a> — who I am and what I do</li>
+  <li><a href="/subscribe/">Subscribe</a> — follow along via RSS</li>
+  <li><a href="/contact/">Contact</a> — get in touch if something seems wrong</li>
+</ul>
+
+{{ end }}

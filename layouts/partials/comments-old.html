@@ -1,0 +1,26 @@
+{{/*
+  Comment System Partial for Hugo
+
+  Usage in templates:
+  {{ partial "comments.html" . }}
+
+  This is a partial, not a shortcode. It gets the page context directly.
+*/}}
+
+{{- $apiUrl := "/comments/api.php" -}}
+{{- $pageUrl := .RelPermalink -}}
+
+<div id="comments-container"
+     data-api-url="{{ $apiUrl }}"
+     data-page-url="{{ $pageUrl }}">
+</div>
+
+{{- if not (.Scratch.Get "comments-loaded") -}}
+  {{- .Scratch.Set "comments-loaded" true -}}
+
+  <!-- Comment System Styles -->
+  <link rel="stylesheet" href="/comments/comments.css">
+
+  <!-- Comment System Script -->
+  <script src="/comments/comments.js"></script>
+{{- end -}}

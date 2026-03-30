@@ -1,0 +1,87 @@
+{{ define "main" }}
+<div class="podcast-list">
+  <header class="podcast-header">
+    <h1>{{ .Title }}</h1>
+    {{ if .Content }}
+    <div class="podcast-description">
+      {{ .Content }}
+    </div>
+    {{ end }}
+  </header>
+  <div class="episodes-grid">
+    {{ range .Paginator.Pages }}
+    <article class="episode-card">
+      <div class="episode-card-content">
+        {{ if .Params.episode_image }}
+        <div class="episode-card-artwork">
+          <img src="{{ .Params.episode_image }}" alt="{{ .Title }} artwork" />
+        </div>
+        {{ end }}
+        
+        <div class="episode-card-info">
+          <div class="episode-card-meta">
+            {{ if .Params.episode }}
+            <span class="episode-number">Episode {{ .Params.episode }}</span>
+            {{ end }}
+            {{ if .Params.explicit }}{{ if eq .Params.explicit "yes" }}
+            <span class="explicit-tag">Explicit</span>
+            {{ end }}{{ end }}
+          </div>
+          
+          <h2 class="episode-card-title">
+            <a href="{{ .Permalink }}">{{ .Title }}</a>
+          </h2>
+          
+          <div class="episode-card-details">
+            <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+              {{ .Date.Format "Jan 2, 2006" }}
+            </time>
+            {{ if .Params.podcast_duration }}
+            <span class="duration">{{ .Params.podcast_duration }}</span>
+            {{ end }}
+          </div>
+          
+          {{ if .Description }}
+          <p class="episode-card-description">
+            {{ .Description | truncate 150 }}
+          </p>
+          {{ end }}
+          
+          <div class="episode-card-actions">
+            <a href="{{ .Permalink }}" class="listen-btn">About the episode</a>
+            {{ if .Params.podcast_file }}
+            <a href="{{ .Params.podcast_file }}" class="download-btn" download>Download</a>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+      
+      {{ if .Params.podcast_file }}
+      <div class="episode-card-player">
+        <audio controls preload="none">
+          <source src="{{ .Params.podcast_file }}" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+      {{ end }}
+    </article>
+    {{ end }}
+  </div>
+  
+  {{ if gt .Paginator.TotalPages 1 }}
+  <nav class="pagination">
+    {{ if .Paginator.HasPrev }}
+    <a href="{{ .Paginator.Prev.URL }}" class="pagination-prev">← Newer Episodes</a>
+    {{ end }}
+    
+    <span class="pagination-info">
+      Page {{ .Paginator.PageNumber }} of {{ .Paginator.TotalPages }}
+    </span>
+    
+    {{ if .Paginator.HasNext }}
+    <a href="{{ .Paginator.Next.URL }}" class="pagination-next">Older Episodes →</a>
+    {{ end }}
+  </nav>
+  {{ end }}
+</div>
+{{ end }}

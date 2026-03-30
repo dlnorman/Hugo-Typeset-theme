@@ -1,0 +1,6 @@
+<div class="callout" role="note" style="padding: 1em 1em; border-radius: 1em; border: 2px solid #333333; margin-top: 1em; margin-bottom: 1em;">
+	<h3 style="display: block; font-size: 1em;"><span aria-hidden="true">{{ .Get "emoji" }}</span> {{ .Get "title"}}</h3>
+	<div class="callout-inner" style="margin-left: 0.5em; padding: 1.5em 0.75em 1.5em 0.6em;">
+    {{ trim .Inner "\r\n" | .Page.RenderString }}
+  </div>
+</div>

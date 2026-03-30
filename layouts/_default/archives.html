@@ -1,0 +1,155 @@
+{{- define "main" -}}
+
+<article class="single-content">
+
+      {{- .Content -}}
+
+<script type="text/javascript">
+function hideType(aType) {
+	let contentType = "archive-" + aType;
+	var elements = document.getElementsByClassName(contentType);
+	for (var i = 0; i < elements.length; i++) {
+		elements[i].style.display = 'none';
+	}
+}
+
+function hideAll() {
+	hideType("posts");
+	hideType("photo");
+	hideType("photos");
+	hideType("reflections");
+	hideType("asides");
+	hideType("notes");
+	hideType("podcast");
+	hideType("page");
+}
+
+function showAll(){
+	showType("posts");
+	showType("photo");
+	showType("photos");
+	showType("reflections");
+	showType("asides");
+	showType("notes");
+	showType("podcast");
+	showType("page");
+	hideUnusedHeaders();
+}
+
+function showType(aType){
+	let contentType = "archive-" + aType;
+	var elements = document.getElementsByClassName(contentType);
+	for (var i = 0; i < elements.length; i++) {
+		elements[i].style.display = 'block';
+	}
+}
+
+function showOnly(aType) {
+	hideAll();
+	showType(aType);
+	hideUnusedHeaders();
+}
+
+
+function hideUnusedHeaders() {
+
+	// hide all H3 headings if they have no visible li descendents
+	const h3Elements = document.querySelectorAll('.archive-month');
+	h3Elements.forEach(h3 => {
+		const ulElement = h3.nextElementSibling;
+		const listItems = ulElement.querySelectorAll('li');
+		
+		let allHidden = true;
+		
+		listItems.forEach(item => {
+			if (window.getComputedStyle(item).display !== 'none') {
+			  allHidden = false;
+			}
+		});
+	
+		if (allHidden) {
+			h3.style.display = 'none';
+		} else {
+			h3.style.display = 'block';
+		}
+	});
+
+	// hide all H2 headings if they have no visible H2 descendents
+	const h2Elements = document.querySelectorAll('.archive-year');
+	h2Elements.forEach(h2 => {
+		const ulElement = h2.nextElementSibling;
+		const listItems = ulElement.querySelectorAll('h3');
+		
+		let allHidden = true;
+		
+		listItems.forEach(item => {
+			if (window.getComputedStyle(item).display !== 'none') {
+			  allHidden = false;
+			}
+		});
+	
+		if (allHidden) {
+			h2.style.display = 'block'; // this should be "none" but that's not working, so… Still need to figure this part out.
+		} else {
+			h2.style.display = 'block';
+		}
+	});
+	
+}
+
+</script> 
+
+<style>
+	.archive-year {
+		border-bottom: 1px solid black;
+	}
+	
+	.single-content li {
+		margin-left: 2em;
+	}
+</style>
+
+<p><a href="#" onclick="javascript:showAll()">All</a> | 📰&nbsp;<a href="#" onclick="javascript:showOnly('posts')">Blog posts</a> | 📸&nbsp;<a href="#" onclick="javascript:showOnly('photo')">Photos</a> | 🤔&nbsp;<a href="#" onclick="javascript:showOnly('reflections')">Weekly reflections</a> | 📝&nbsp;<a href="#" onclick="javascript:showOnly('asides')">Asides</a> | 📓&nbsp;<a href="#" onclick="javascript:showOnly('notes')">Notes</a> | 🎙&nbsp;<a href="#" onclick="javascript:showOnly('podcast')">Podcasts</a><!--  | 📄&nbsp;<a href="#" onclick="javascript:showOnly('page')">Pages</a> --></p>
+
+	{{- range (site.RegularPages.GroupByPublishDate "2006")}}
+<!-- grouped by year -->
+	<h2 class="archive-year" id="{{.Key | urlize}}">{{.Key}}</h2>
+	
+	{{- range (.Pages.GroupByPublishDate "January")}}
+	<!-- then group by month -->
+	<h3 class="archive-month">{{.Key}}</h3>
+		<ul class="year-of-posts" style="list-style-type: none; padding: 0; margin: 0;">
+			{{- range sort .Pages "PublishDate" "desc" -}}
+			<li class="archive-item archive-{{.Type}}">
+				<p>
+				{{- if eq .Type "posts" -}}
+					📰
+				{{- else if eq .Type "photo" -}}
+					📸
+				{{- else if eq .Type "photos" -}}
+					📸
+				{{- else if eq .Type "reflections" -}}
+					🤔
+				{{- else if eq .Type "asides" -}}
+					📝
+				{{- else if eq .Type "notes" -}}
+					📓
+				{{- else if eq .Type "podcast" -}}
+					🎙️
+				{{- else -}}
+					📄
+				{{- end -}}
+					&nbsp;<time datetime="{{- .PublishDate.Format "2006-01-02T15:04:05-07:00" -}}"></time>
+					{{- .PublishDate.Format "January 2" -}}:&nbsp;<a href="{{.Permalink}}">{{- .Title -}}</a>
+				</p>
+			</li>
+			{{- end -}}
+		</ul>
+		{{- end -}}
+	{{- end -}}
+
+
+</article>
+
+
+{{- end -}}

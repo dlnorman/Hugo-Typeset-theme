@@ -1,0 +1,55 @@
+{{ define "main" }}
+<article class="single-content">
+  <div class="content-header">
+	<h1>External Links</h1>
+	<p>Links to websites from the 20 most recent posts.</p>
+  </div>
+
+  
+<div class="content">
+{{ $grouped := slice }}
+{{ $siteDomain := "darcynorman.net" }}
+
+{{ range .Site.RegularPages }}
+  {{ $page := . }}
+  {{ $foundLinks := slice }}
+  
+  {{ $links := findRE `<a href="(https?://[^"]+)"` .Content }}
+  {{ range $links }}
+    {{ $url := replaceRE `<a href="(https?://[^"]+)".*` "$1" . }}
+    {{ $isExternal := true }}
+    {{ if or (in $url $siteDomain) (in $url (printf "www.%s" $siteDomain)) }}
+      {{ $isExternal = false }}
+    {{ end }}
+    
+    {{ if $isExternal }}
+      {{ $foundLinks = $foundLinks | append $url }}
+    {{ end }}
+  {{ end }}
+  
+  {{ if gt (len $foundLinks) 0 }}
+    {{ $pageInfo := dict "title" $page.Title "url" $page.Permalink "date" $page.Date "links" $foundLinks }}
+    {{ $grouped = $grouped | append $pageInfo }}
+  {{ end }}
+{{ end }}
+
+{{ $sortedPages := sort $grouped "date" "desc" }}
+{{ $limitedPages := first 20 $sortedPages }}
+
+{{ if eq (len $limitedPages) 0 }}
+  <p>No external links found in your content.</p>
+{{ else }}
+  {{ range $limitedPages }}
+    <div class="page-links-group">
+      <h2><a href="{{ .url }}">{{ .title }}</a> <small>({{ .date.Format "January 2, 2006" }})</small></h2>
+      <ul>
+        {{ range .links }}
+          <li><a href="{{ . }}" target="_blank">{{ . }}</a></li>
+        {{ end }}
+      </ul>
+    </div>
+  {{ end }}
+  </div>
+</article>
+{{ end }}
+{{ end }}

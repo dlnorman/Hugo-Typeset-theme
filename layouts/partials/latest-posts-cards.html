@@ -1,0 +1,92 @@
+<div class="latest-posts">
+    <h2>Latest Posts</h2>
+    <div class="posts-grid">
+        {{- range first 12 (where site.RegularPages "Type" "in" site.Params.mainSections) -}}
+        {{- $firstImage := "" -}}
+
+        {{- /* Check for featured image in front matter */ -}}
+        {{- with .Params.image -}}
+            {{- $firstImage = . -}}
+        {{- end -}}
+
+        {{- /* If no featured image, try to find first image in content */ -}}
+        {{- if not $firstImage -}}
+            {{- $content := .Content -}}
+            {{- $rawContent := .RawContent -}}
+
+            {{- /* Try to find Hugo figure shortcode in raw content */ -}}
+            {{- $figureShortcodes := findRE `{{\s*<\s*figure[^}]*src=["']([^"']+)["'][^}]*>}}` $rawContent 1 -}}
+            {{- if $figureShortcodes -}}
+                {{- $firstImage = replaceRE `{{\s*<\s*figure[^}]*src=["']([^"']+)["'].*` "$1" (index $figureShortcodes 0) -}}
+            {{- else -}}
+                {{- /* Try to find image in rendered HTML content */ -}}
+                {{- $htmlImages := findRE `<img[^>]+src=["']([^"']+)["']` $content 1 -}}
+                {{- if $htmlImages -}}
+                    {{- $firstImage = replaceRE `.*src=["']([^"']+)["'].*` "$1" (index $htmlImages 0) -}}
+                {{- else -}}
+                    {{- /* Try to find markdown image in raw content */ -}}
+                    {{- $mdImages := findRE `!\[[^\]]*\]\(([^)]+\.(?:jpg|jpeg|png|gif|webp|JPG|JPEG|PNG|GIF|WEBP))\)` $rawContent 1 -}}
+                    {{- if $mdImages -}}
+                        {{- $firstImage = replaceRE `!\[[^\]]*\]\(([^)]+)\)` "$1" (index $mdImages 0) -}}
+                    {{- end -}}
+                {{- end -}}
+            {{- end -}}
+        {{- end -}}
+
+        {{- /* Use default image if no image found */ -}}
+        {{- if not $firstImage -}}
+            {{- $firstImage = "https://darcynorman.net/images/default-post-thumbnail.jpg" -}}
+        {{- end -}}
+
+        <article class="post-card">
+            <div class="post-card-image">
+                <a href="{{- .RelPermalink -}}" aria-hidden="true" tabindex="-1">
+                    <img src="{{- $firstImage -}}" 
+                         alt="Thumbnail image for post: {{- .Title -}}"
+                         loading="lazy"
+                         width="360"
+                         height="240">
+                </a>
+            </div>
+            <div class="post-card-header">
+                <time datetime='{{- .Date.Format "2006-01-02" -}}' class='post-card-date'>{{- .Date.Format "January 2, 2006" -}}</time>
+                {{- if .ReadingTime -}}
+                <span class="post-card-reading-time">{{- .ReadingTime -}} min read</span>
+                {{- end -}}
+            </div>
+            <h3 class="post-card-title">
+                <a href="{{- .RelPermalink -}}">{{- .Title -}}</a>
+            </h3>
+            {{- if .Params.tags -}}
+            {{- $synonyms := hugo.Data.tag_synonyms.tags -}}
+            <div class="post-card-tags">
+                {{- range first 3 .Params.tags -}}
+                {{- $tag := lower . -}}
+                {{- $primaryTag := "" -}}
+                {{- range $primary, $synonymArray := $synonyms -}}
+                    {{- $primaryLower := lower $primary -}}
+                    {{- $found := false -}}
+                    {{- range $synonymArray -}}
+                        {{- if eq $tag (lower .) -}}
+                            {{- $primaryTag = $primaryLower -}}
+                            {{- $found = true -}}
+                        {{- end -}}
+                    {{- end -}}
+                    {{- if $found -}}{{- break -}}{{- end -}}
+                {{- end -}}
+                {{- $displayTag := cond (ne $primaryTag "") $primaryTag . -}}
+                <span class="post-tag">{{- $displayTag -}}</span>
+                {{- end -}}
+            </div>
+            {{- end -}}
+            <div class="post-card-footer">
+                <a href="{{- .RelPermalink -}}" class="post-card-link" aria-label="Read more about {{- .Title -}}">
+                    Read more
+                    <span class="visually-hidden">about {{- .Title -}}</span>
+                    <span aria-hidden="true">→</span>
+                </a>
+            </div>
+        </article>
+        {{ end }}
+    </div>
+</div>

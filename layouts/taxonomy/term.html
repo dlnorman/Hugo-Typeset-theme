@@ -1,0 +1,78 @@
+{{ define "main" }}
+<div class="tags-content">
+    <header class="tags-header">
+        <h1>{{- .Title -}}</h1>
+        {{- with .Description -}}
+        <div class="tags-description">{{ . }}</div>
+        {{- end -}}
+    </header>
+    <div class="term-container">
+        {{- $currentTag := lower .Title -}}
+        {{- $synonyms := hugo.Data.tag_synonyms.tags -}}
+        {{- $primaryTag := $currentTag -}}
+        {{- $allTags := slice $currentTag -}}
+        {{- $hasSynonyms := false -}}
+
+        {{- if $synonyms -}}
+            {{- range $primary, $synonymArray := $synonyms -}}
+                {{- $primaryLower := lower $primary -}}
+                {{- $synonymArrayLower := apply $synonymArray "lower" "." -}}
+                {{- if or (eq $primaryLower $currentTag) (in $synonymArrayLower $currentTag) -}}
+                    {{- $primaryTag = $primaryLower -}}
+                    {{- $allTags = $allTags | append $primaryLower -}}
+                    {{- $allTags = $allTags | append $synonymArrayLower -}}
+                    {{- $hasSynonyms = true -}}
+                    {{- break -}}
+                {{- end -}}
+            {{- end -}}
+        {{- end -}}
+
+        {{- $uniqueTags := dict -}}
+        {{- range $allTags -}}
+            {{- $uniqueTags = merge $uniqueTags (dict . true) -}}
+        {{- end -}}
+        {{- $allTags = slice -}}
+        {{- range $key, $value := $uniqueTags -}}
+            {{- $allTags = $allTags | append $key -}}
+        {{- end -}}
+
+        {{- if $hasSynonyms -}}
+        <div class="tag-synonyms">
+            <p>Synonyms for&nbsp;{{- .Title -}}:&nbsp;
+                {{- range $allTags -}}<em>{{- . -}}</em>&nbsp;|&nbsp;{{- end -}}
+            </p>
+        </div>
+        {{- end -}}
+
+        {{/* Use Hugo's pre-computed .Pages instead of scanning .Site.Pages */}}
+        {{- $relatedPages := .Pages -}}
+
+        {{/* For synonym tags, look up their pages directly from the taxonomy index */}}
+        {{- if $hasSynonyms -}}
+            {{- range $allTags -}}
+                {{- if ne . $currentTag -}}
+                    {{- $termSlug := . | urlize -}}
+                    {{- $synonymPages := index $.Site.Taxonomies.tags $termSlug -}}
+                    {{- with $synonymPages -}}
+                        {{- range . -}}
+                            {{- $relatedPages = $relatedPages | append .Page -}}
+                        {{- end -}}
+                    {{- end -}}
+                {{- end -}}
+            {{- end -}}
+            {{- $relatedPages = uniq $relatedPages -}}
+        {{- end -}}
+        {{- $relatedPages = sort $relatedPages "Date" "desc" -}}
+
+        {{- if gt (len $relatedPages) 0 -}}
+        <ul>
+            {{- range $relatedPages -}}
+            <li><a href="{{- .Permalink -}}">{{.Date.Format "2006-01-02"}}&nbsp;|&nbsp;{{- .Title -}}</a></li>
+            {{- end -}}
+        </ul>
+        {{- else -}}
+        <p>No posts found for this tag.</p>
+        {{- end -}}
+    </div>
+</div>
+{{- end -}}

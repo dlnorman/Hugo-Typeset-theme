@@ -1,0 +1,43 @@
+{{- define "main" -}}
+<section class="list-page main-content">
+    <header>
+        <h1>{{- .Title -}}</h1>
+        {{- with .Description -}}
+            <p>{{- . -}}</p>
+        {{- end -}}
+    </header>
+
+    <div class="series-grid">
+        {{- range .Data.Terms.Alphabetical -}}
+            {{- $termPage := .Page -}}
+            {{- $pages := $termPage.Pages.ByDate -}}
+            {{- $count := len $pages -}}
+            {{- if gt $count 0 -}}
+                {{- $earliest := (index $pages 0).Date -}}
+                {{- $latest := (index ($pages.Reverse) 0) -}}
+                <a href="{{ $termPage.RelPermalink }}" class="series-card">
+                    <div class="series-card-top">
+                        <h2 class="series-card-title">{{- $termPage.Title -}}</h2>
+                        <span class="series-card-count">
+                            {{- $count -}}&nbsp;{{- if eq $count 1 -}}post{{- else -}}posts{{- end -}}
+                        </span>
+                    </div>
+                    <div class="series-card-dates">
+                        {{- if eq $earliest.Year $latest.Date.Year -}}
+                            {{- $earliest.Format "2006" -}}
+                        {{- else -}}
+                            {{- $earliest.Format "2006" -}}–{{- $latest.Date.Format "2006" -}}
+                        {{- end -}}
+                    </div>
+                    {{- with $termPage.Description -}}
+                    <div class="series-card-description">{{- . -}}</div>
+                    {{- end -}}
+                    <div class="series-card-latest">
+                        Latest: <em>{{- $latest.Title -}}</em>
+                    </div>
+                </a>
+            {{- end -}}
+        {{- end -}}
+    </div>
+</section>
+{{- end -}}

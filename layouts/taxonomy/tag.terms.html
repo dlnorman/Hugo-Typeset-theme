@@ -1,0 +1,104 @@
+{{ define "main" }}
+<div class="tags-content">
+    <header class="tags-header">
+        <h1>{{ .Title }}</h1>
+        {{ with .Description }}
+        <div class="tags-description">{{ . }}</div>
+        {{ end }}
+    </header>
+
+    <div class="tag-cloud">
+        <p>That's a <em>lot</em> of tags, accumulated over the last 24+ years. There's also <a
+                href="https://darcynorman.net/archives/recent-tags/" style="text-decoration: underline">a smaller tag cloud that just shows tags used in
+                the last 5 years</a>, and <a href="https://darcynorman.net/photos/tags/" style="text-decoration: underline">a separate tag cloud just for
+                photos</a>.</p>
+
+        {{- $synonyms := hugo.Data.tag_synonyms.tags -}}
+        {{- $consolidatedTags := dict -}}
+
+        <!-- begin photo-tag removal -->
+        <!-- get a list of all non-Photos content  -->
+        {{ $tagsExcludingPhotos := dict }}
+        {{ range $key, $pages := .Site.Taxonomies.tags }}
+        {{ $filteredPages := slice }}
+        {{ range $pages }}
+        {{ if ne .Type "photo" }}
+        {{ $filteredPages = $filteredPages | append . }}
+        {{ end }}
+        {{ end }}
+
+        {{ if gt (len $filteredPages) 0 }}
+        {{ $tagsExcludingPhotos = merge $tagsExcludingPhotos (dict $key $filteredPages) }}
+        {{ end }}
+        {{ end }}
+
+        <!-- 
+and then iterate over them to get the tags
+
+to back this out, replace $tagsExcludingPhotos with $.Site.Taxonomies.tags on line 39
+    - range $name, $taxonomy := $.Site.Taxonomies.tags -
+ -->
+        <!-- end photo-tag removal -->
+
+        {{- range $name, $taxonomy := $tagsExcludingPhotos -}}
+        {{- $tag := lower $name -}}
+        {{- $primaryTag := "" -}}
+
+        {{- range $primary, $synonymArray := $synonyms -}}
+        {{- $primaryLower := lower $primary -}}
+        {{- $found := false -}}
+
+        {{- range $synonymArray -}}
+        {{- $synonym := lower . -}}
+        {{- if eq $tag $synonym -}}
+        {{- $primaryTag = $primaryLower -}}
+        {{- $found = true -}}
+        {{- end -}}
+        {{- end -}}
+
+        {{- if $found -}}
+        {{- break -}}
+        {{- end -}}
+        {{- end -}}
+
+        {{- if $primaryTag -}}
+        {{- $existingCount := index $consolidatedTags $primaryTag | default 0 -}}
+        {{- $consolidatedTags = merge $consolidatedTags (dict $primaryTag (add $existingCount (len $taxonomy.Pages)))
+        -}}
+        {{- else -}}
+        {{- $existingCount := index $consolidatedTags $tag | default 0 -}}
+        {{- $consolidatedTags = merge $consolidatedTags (dict $tag (add $existingCount (len $taxonomy.Pages))) -}}
+        {{- end -}}
+        {{- end -}}
+
+        {{- if not (eq (len $consolidatedTags) 0) -}}
+        {{- $fontUnit := "rem" -}}
+        {{- $largestFontSize := 2.5 -}}
+        {{- $smallestFontSize := 1.0 -}}
+
+        <!-- Calculate the maximum and minimum values manually -->
+        {{- $max := 0 -}}
+        {{- $min := -1 -}}
+
+        {{- range $consolidatedTags -}}
+        {{- if gt . $max -}}
+        {{- $max = . -}}
+        {{- end -}}
+        {{- if or (eq $min -1) (lt . $min) -}}
+        {{- $min = . -}}
+        {{- end -}}
+        {{- end -}}
+
+        <div id="tag-cloud" style="padding: 5px 15px">
+            {{- range $name, $count := $consolidatedTags -}}
+            {{- $weight := div (sub (math.Log $count) (math.Log $min)) (sub (math.Log $max) (math.Log $min)) -}}
+            {{- $currentFontSize := (add $smallestFontSize (mul (sub $largestFontSize $smallestFontSize) $weight) ) -}}
+            <a href="{{ "/tags/" | relLangURL }}{{ $name | urlize }}"
+                style="font-size:{{$currentFontSize}}{{$fontUnit}}" title="{{$count}} items">{{ $name }}</a>&emsp;
+            {{- end -}}
+        </div>
+        {{- end -}}
+
+    </div>
+
+    {{- end -}}

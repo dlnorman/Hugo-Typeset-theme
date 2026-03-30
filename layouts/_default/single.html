@@ -1,0 +1,50 @@
+{{ define "main" }}
+<article class="content">
+    <header>
+        <h1>{{ .Title }}</h1>
+			{{ if not .Params.hideMeta }}
+				<time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+				{{ partial "post-tags.html" . .RelPermalink }}
+			{{ end }}
+    </header>
+    
+
+	{{ if .Params.series }}
+		{{ partial "series-indicator.html" . .RelPermalink }}
+	{{ end }}
+
+    {{ with .Params.image }}
+    <img src="{{ . }}" alt="Decorative poster image for {{ $.Title }}" class="post-hero-image">
+    {{ end }}
+
+    <div class="article-content">
+        {{ .Content }}
+    </div>
+
+	<div class="post-footer">
+		{{ if not .Params.hideMeta }}
+		  {{ if .Params.lastmod }}
+				<div class="page-meta">
+				  <p>Last updated: {{ .Params.lastmod.Format "January 2, 2006" }}</p>
+				</div>
+			{{ end }}
+		{{ end }}
+
+		{{ if .Site.Params.showRelatedPosts }}
+		    {{ partialCached "related-posts.html" . .RelPermalink }}
+		{{ end }}
+
+		<!-- custom comments go here -->
+		{{ if ne .Params.comments false }}
+			{{ partialCached "comments.html" . .RelPermalink }}
+		{{ end }}
+
+		{{ if ne .Params.comments false }}
+			{{ if .Site.Params.talkyard }}
+				{{ partialCached "talkyard-comments.html" . .RelPermalink}}
+			{{ end }}
+		{{ end }}
+	</div>
+
+</article>
+{{ end }}

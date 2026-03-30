@@ -1,0 +1,14 @@
+{{ $src := (.Get "src") }}
+{{ $width := (.Get "width") }}
+{{ $height := (.Get "height") }}
+{{ $poster := (.Get "poster") }}
+
+{{ $title := .Get "title" }}
+<figure>
+{{ with $title }}<figcaption>{{ . }}</figcaption>{{ end }}
+<video{{ if $width }} width="{{ $width }}"{{ end }}{{ if $height }} height="{{ $height }}"{{end}} {{ if $poster }} poster="{{ $poster }}"{{ else }} poster="/images/videoposter.jpg"{{ end }} {{ if eq (.Get "autoplay") "true" }}autoplay {{ end }}{{ if eq (.Get "loop") "true" }}loop {{ end }}{{ if eq (.Get "muted") "true" }}muted {{ end }} controls preload="metadata"{{ with $title }} aria-label="{{ . }}"{{ end }}>
+  <source src="{{ $src | relURL }}" type="video/mp4">
+  {{ if $poster }}<img src="{{ $poster }}" alt="poster image for video" {{ if $width }} width="{{ $width }}"{{ end }}{{ if $height }} height="{{ $height }}"{{end}} >{{ end }}
+  A video is embedded here, but may not be displayed on a preview or if your browser does not support the video tag.
+</video>
+</figure>

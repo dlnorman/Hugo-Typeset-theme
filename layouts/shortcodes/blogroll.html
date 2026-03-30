@@ -1,0 +1,6 @@
+<ul>
+    {{ $opmlJson := index hugo.Data.opml "opml" "body" "outline" "outline" }}
+    {{ range sort $opmlJson "_title" "asc" }}
+    <li><a href="{{ ._htmlUrl }}" target="_blank">{{ ._title }}</a></li>
+    {{ end }}
+</ul>

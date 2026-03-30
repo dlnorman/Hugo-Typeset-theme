@@ -1,0 +1,76 @@
+<!-- layouts/shortcodes/recentTagCloud.html -->
+
+<div class="tags-content tag-cloud">
+  <div id="tag-cloud">
+    {{- $synonyms := hugo.Data.tag_synonyms.tags -}}
+    {{- $consolidatedTags := dict -}}
+    {{- $cutoffDate := now.AddDate -5 0 0 -}}
+
+    <!-- Get a list of all non-Photos content -->
+    {{ $tagsExcludingPhotos := dict }}
+    {{ range $key, $pages := $.Site.Taxonomies.tags }}
+      {{ $filteredPages := slice }}
+      {{ $hasRecentContent := false }}
+      
+      {{ range $pages }}
+        {{ if and (ne .Type "photo") (gt .Date $cutoffDate) }}
+          {{ $filteredPages = $filteredPages | append . }}
+          {{ $hasRecentContent = true }}
+        {{ end }}
+      {{ end }}
+      
+      {{ if gt (len $filteredPages) 0 }}
+        {{ $tagsExcludingPhotos = merge $tagsExcludingPhotos (dict $key $filteredPages) }}
+      {{ end }}
+    {{ end }}
+
+    {{- range $name, $taxonomy := $tagsExcludingPhotos -}}
+        {{- $tag := lower $name -}}
+        {{- $primaryTag := "" -}}
+        {{- range $primary, $synonymArray := $synonyms -}}
+            {{- $primaryLower := lower $primary -}}
+            {{- $found := false -}}
+            {{- range $synonymArray -}}
+                {{- $synonym := lower . -}}
+                {{- if eq $tag $synonym -}}
+                    {{- $primaryTag = $primaryLower -}}
+                    {{- $found = true -}}
+                {{- end -}}
+            {{- end -}}
+            {{- if $found -}}
+                {{- break -}}
+            {{- end -}}
+        {{- end -}}
+        {{- if $primaryTag -}}
+            {{- $existingCount := index $consolidatedTags $primaryTag | default 0 -}}
+            {{- $consolidatedTags = merge $consolidatedTags (dict $primaryTag (add $existingCount (len $taxonomy))) -}}
+        {{- else -}}
+            {{- $existingCount := index $consolidatedTags $tag | default 0 -}}
+            {{- $consolidatedTags = merge $consolidatedTags (dict $tag (add $existingCount (len $taxonomy))) -}}
+        {{- end -}}
+    {{- end -}}
+    {{- if not (eq (len $consolidatedTags) 0) -}}
+        {{- $fontUnit := "rem" -}}
+        {{- $largestFontSize := 2.5 -}}
+        {{- $smallestFontSize := 1.0 -}}
+        <!-- Calculate the maximum and minimum values manually -->
+        {{- $max := 0 -}}
+        {{- $min := -1 -}}
+        {{- range $consolidatedTags -}}
+            {{- if gt . $max -}}
+                {{- $max = . -}}
+            {{- end -}}
+            {{- if or (eq $min -1) (lt . $min) -}}
+                {{- $min = . -}}
+            {{- end -}}
+        {{- end -}}
+        <div id="tag-cloud" style="padding: 5px 15px">
+            {{- range $name, $count := $consolidatedTags -}}
+                {{- $weight := div (sub (math.Log $count) (math.Log $min)) (sub (math.Log $max) (math.Log $min)) -}}
+                {{- $currentFontSize := (add $smallestFontSize (mul (sub $largestFontSize $smallestFontSize) $weight) ) -}}
+                <a href="{{ "/tags/" | relLangURL }}{{ $name | urlize }}" style="font-size:{{$currentFontSize}}{{$fontUnit}}" title="{{$count}} items">{{ $name }}</a>&emsp;
+            {{- end -}}
+        </div>
+    {{- end -}}
+  </div>
+</div>

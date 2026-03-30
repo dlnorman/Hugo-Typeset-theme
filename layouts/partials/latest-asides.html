@@ -1,0 +1,12 @@
+<div class="latest-asides">
+    {{ $asides := where site.RegularPages "Type" "asides" }}
+    {{ range first 5 $asides }}
+    <article class="aside-item">
+        <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+        <time>{{ .Date.Format "January 2, 2006" }}</time>
+        <div class="aside-content">
+            {{ .Content }}
+        </div>
+    </article>
+    {{ end }}
+</div>

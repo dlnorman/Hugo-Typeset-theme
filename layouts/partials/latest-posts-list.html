@@ -1,0 +1,11 @@
+<div class="latest-posts">
+    <h2>Latest Posts</h2>
+	<ul>
+	    {{- range first 10 (where site.RegularPages "Type" "in" site.Params.mainSections) -}}
+	    <li class="post-item">
+	        <span class="post-date">{{- .Date.Format "January 2, 2006" -}}</span>
+	        <a href="{{- .RelPermalink -}}">{{- .Title -}}</a>
+	    </li>
+	    {{ end }}
+	</ul>
+</div>

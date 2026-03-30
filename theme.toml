@@ -1,0 +1,12 @@
+name = "Typeset"
+license = "MIT"
+licenselink = "https://github.com/dlnorman/typeset/blob/master/LICENSE"
+description = "A clean, typographically focused Hugo theme with multiple colour modes"
+homepage = "https://github.com/dlnorman/typeset"
+tags = ["blog", "minimal", "responsive", "typography", "dark mode"]
+features = ["responsive", "dark mode", "typography"]
+min_version = "0.60.0"
+
+[author]
+  name = "D'Arcy Norman"
+  homepage = "https://darcynorman.net"

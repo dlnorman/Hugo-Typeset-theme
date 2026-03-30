@@ -1,0 +1,31 @@
+{{ define "main" }}
+<article class="photo">
+    <header>
+        <h1>{{ .Title }}</h1>
+        <time>{{ .Date.Format "January 2, 2006" }}</time>
+    </header>
+    
+    {{ with .Params.image }}
+    <figure class="featured-image">
+        <img src="{{ . }}" alt="{{ $.Title }}">
+        {{ with $.Params.caption }}
+            <figcaption>{{ . }}</figcaption>
+        {{ end }}
+    </figure>
+    {{ end }}
+    
+    <div class="photo-content">
+        {{ .Content }}
+    </div>
+    
+    {{ with .Params.tags }}
+    <div class="tags">
+        <ul>
+            {{ range . }}
+            <li><a href="{{ "tags/" | relLangURL }}{{ . | urlize }}">{{ . }}</a></li>
+            {{ end }}
+        </ul>
+    </div>
+    {{ end }}
+</article>
+{{ end }}

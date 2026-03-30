@@ -1,0 +1,62 @@
+/* ============================================
+   LIGHT THEME
+   ============================================ */
+html[data-theme="light"] {
+    /* Colour Scheme */
+    --page-bg-colour: #e6e6e6;
+    --bg-colour: #fff;
+    --text-colour: #333;
+    --text-colour-light: #666;
+    --link-colour: #000;
+    --link-hover-colour: #004080;
+    --accent-colour: #ccc;
+    --border-colour: #eee;
+    --hover-bg-colour: #f5f5f5;
+    --code-bg-colour: #f5f5f5;
+    --nav-link-colour: #333;
+    --nav-link-hover-colour: #0066cc;
+    --dropdown-bg-colour: #fff;
+    --tag-bg-colour: #f0f0f0;
+    --tag-text-colour: #666;
+
+    /* Additional Variables */
+    --bg-secondary: #f9f9f9;
+    --text-secondary: #666;
+    --border-color: #eee;
+    --accent-color: #0066cc;
+
+    /* Enforce light browser widgets */
+    color-scheme: light;
+}
+
+/* Photo Gallery Styles */
+html[data-theme="light"] .photo-item {
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="light"] .photo-item:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="light"] .photo-title,
+html[data-theme="light"] .photo-overlay time {
+    color: #ffffff !important;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Search Styles */
+html[data-theme="light"] .search-box-container {
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme="light"] .search-box-container:focus-within {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="light"] .search-input,
+html[data-theme="light"] #book-search-input {
+    border-radius: 20px;
+    padding: 1em;
+}

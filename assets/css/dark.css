@@ -1,0 +1,67 @@
+/* ============================================
+   DARK THEME
+   ============================================ */
+html[data-theme="dark"] {
+    /* Colour Scheme */
+    --page-bg-colour: #252525;
+    --bg-colour: #1a1a1a;
+    --text-colour: #e0e0e0;
+    --text-colour-light: #a0a0a0;
+    --link-colour: #FFF;
+    --link-hover-colour: #99ccff;
+    --accent-colour: #6699ff;
+    --border-colour: #333;
+    --hover-bg-colour: #333;
+    --code-bg-colour: #282828;
+    --nav-link-colour: #e0e0e0;
+    --nav-link-hover-colour: #6699ff;
+    --dropdown-bg-colour: #262626;
+    --tag-bg-colour: #333;
+    --tag-text-colour: #e0e0e0;
+
+    /* Additional Variables */
+    --bg-secondary: #262626;
+    --text-secondary: #a0a0a0;
+    --border-color: #333;
+    --accent-color: #6699ff;
+
+    /* Enforce dark browser widgets */
+    color-scheme: dark;
+}
+
+/* Logo mark: near-white on dark background via currentColor on inline SVG */
+html[data-theme="dark"] .site-logo-mark {
+    color: #e0e0e0;
+}
+
+/* Photo Gallery Styles */
+html[data-theme="dark"] .photo-item {
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="dark"] .photo-item:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="dark"] .photo-title,
+html[data-theme="dark"] .photo-overlay time {
+    color: #ffffff !important;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Search Styles */
+html[data-theme="dark"] .search-box-container {
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme="dark"] .search-box-container:focus-within {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="dark"] .search-input,
+html[data-theme="dark"] #book-search-input {
+    border-radius: 20px;
+    padding: 1em;
+}

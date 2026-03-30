@@ -1,0 +1,59 @@
+/* ============================================
+   MID-CENTURY MODERN THEME
+   Fixed light palette — no automatic dark variant
+   ============================================ */
+
+html[data-theme="midcentury"] {
+	--page-bg-colour: #ece3d2;
+	--bg-colour: #c3b8ac;
+	--text-colour: #2e0702;
+	--text-colour-light: #8a6c5b;
+	--link-colour: #0279a3;
+	--link-hover-colour: #e35c07;
+	--border-colour: #a5968b;
+	--accent-color: #7b0e04;
+	--accent-colour: #7b0e04;
+	--hover-bg-colour: #ece3d2;
+	--code-bg-colour: #ece3d2;
+	--nav-link-colour: #2e0702;
+	--nav-link-hover-colour: #7b0e04;
+	--dropdown-bg-colour: #ece3d2;
+	--tag-bg-colour: #ece3d2;
+	--tag-text-colour: #074161;
+	--bg-secondary: #ece3d2;
+	--text-secondary: #2e0702;
+
+    color-scheme: light;
+}
+
+/* Photo Gallery Styles */
+html[data-theme="midcentury"] .photo-item {
+    border-radius: 0;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="midcentury"] .photo-item:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+html[data-theme="midcentury"] .photo-title,
+html[data-theme="midcentury"] .photo-overlay time {
+    color: #ffffff !important;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Search Styles */
+html[data-theme="midcentury"] .search-box-container {
+    border-radius: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="midcentury"] .search-box-container:focus-within {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme="midcentury"] .search-input,
+html[data-theme="midcentury"] #book-search-input {
+    border-radius: 0;
+    padding: 1em;
+}
