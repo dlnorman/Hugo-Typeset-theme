@@ -46,15 +46,11 @@
                 <span class="theme-menu-caret" aria-hidden="true">▾</span>
             </button>
             <ul class="theme-menu" id="theme-menu" role="menu">
-                <li role="none"><button id="light-mode" class="theme-option" role="menuitem">☀️ Light</button></li>
-                <li role="none"><button id="dark-mode" class="theme-option" role="menuitem">🌙 Dark</button></li>
-                <li role="none"><button id="terminal-mode" class="theme-option" role="menuitem">💻 Terminal</button></li>
-                <li role="none"><button id="midcentury-mode" class="theme-option" role="menuitem">✦ Mid-century</button></li>
-                <li role="none"><button id="1bit-mode" class="theme-option" role="menuitem">◑ 1-bit</button></li>
-                <li role="none"><button id="foothills-mode" class="theme-option" role="menuitem">⛰️ Foothills</button></li>
-                <li role="none"><button id="1975-mode" class="theme-option" role="menuitem">🪩 1975</button></li>
+                {{- range hugo.Data.themes }}
+                <li role="none"><button class="theme-option" role="menuitem" data-theme="{{ .name }}"><span class="theme-icon">{{ .icon }}</span> {{ .label }}</button></li>
+                {{- end }}
             </ul>
         </div>
     </div>
-    {{ partialCached "nav.html" . .RelPermalink}}
+    {{ partial "nav.html" . }}
 </header>

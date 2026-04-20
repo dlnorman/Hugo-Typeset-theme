@@ -1,0 +1,26 @@
+{{ define "main" }}
+<article class="content">
+    <header>
+        <h1 class="linkblog-page-title">{{ .Title }}</h1>
+        <a href="{{ "/links/" | relURL }}" class="linkblog-back">← All weeks</a>
+    </header>
+
+    <div class="linkblog-content">
+        {{ .Content }}
+    </div>
+
+</article>
+<script>
+// Move each entry's screenshot before its h3 so float:right wraps the title+description
+document.querySelectorAll('.linkblog-content h3').forEach(h3 => {
+  let el = h3.nextElementSibling;
+  while (el && el.tagName !== 'HR') {
+    if (el.querySelector('img')) {
+      h3.parentNode.insertBefore(el, h3);
+      break;
+    }
+    el = el.nextElementSibling;
+  }
+});
+</script>
+{{ end }}

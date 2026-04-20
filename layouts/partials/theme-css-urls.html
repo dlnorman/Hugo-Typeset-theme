@@ -1,0 +1,6 @@
+{{- $themeCSS := dict -}}
+{{- range hugo.Data.themes -}}
+  {{- $css := resources.Get (printf "css/%s" .file) | resources.Minify | resources.Fingerprint -}}
+  {{- $themeCSS = merge $themeCSS (dict .name $css.RelPermalink) -}}
+{{- end -}}
+{{- return $themeCSS -}}

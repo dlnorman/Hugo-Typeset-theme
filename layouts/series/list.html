@@ -1,6 +1,9 @@
 {{- define "main" -}}
 <section class="list-page main-content">
     <header>
+        {{- with .Params.image -}}
+        <img src="{{- . -}}" alt="{{- $.Title -}}" class="series-header-image">
+        {{- end -}}
         <h1>{{- .Title -}}</h1>
         {{- with .Description -}}
             <p>{{- . -}}</p>

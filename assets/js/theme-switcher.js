@@ -5,26 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeCurrentIcon = document.getElementById('theme-current-icon');
     const systemThemeMedia = window.matchMedia('(prefers-color-scheme: dark)');
 
-    const themeIcons = {
-        light: '☀️',
-        dark: '🌙',
-        terminal: '💻',
-        midcentury: '✦',
-        '1-bit': '◑',
-        foothills: '⛰️',
-        '1975': '🪩',
-    };
-
-    // Map button IDs to theme names
-    const themeButtonMap = {
-        'light-mode': 'light',
-        'dark-mode': 'dark',
-        'terminal-mode': 'terminal',
-        'midcentury-mode': 'midcentury',
-        '1bit-mode': '1-bit',
-        'foothills-mode': 'foothills',
-        '1975-mode': '1975',
-    };
 
     // Apply theme CSS and data attribute without saving
     function applyTheme(theme) {
@@ -71,13 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update the active highlight and toggle button icon
     function updateActiveOption(activeTheme) {
         document.querySelectorAll('.theme-option').forEach(btn => btn.classList.remove('active'));
-        if (activeTheme) {
-            const activeId = Object.keys(themeButtonMap).find(id => themeButtonMap[id] === activeTheme);
-            const btn = activeId ? document.getElementById(activeId) : null;
-            if (btn) btn.classList.add('active');
-        }
+        const btn = activeTheme
+            ? document.querySelector(`.theme-option[data-theme="${activeTheme}"]`)
+            : null;
+        if (btn) btn.classList.add('active');
         if (themeCurrentIcon) {
-            themeCurrentIcon.textContent = activeTheme ? themeIcons[activeTheme] : '🎨';
+            const iconEl = btn ? btn.querySelector('.theme-icon') : null;
+            themeCurrentIcon.textContent = iconEl ? iconEl.textContent : '🎨';
         }
     }
 
@@ -120,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Theme option clicks
     document.querySelectorAll('.theme-option').forEach(btn => {
         btn.addEventListener('click', () => {
-            const theme = themeButtonMap[btn.id];
+            const theme = btn.dataset.theme;
             if (theme) toggleTheme(theme);
         });
     });

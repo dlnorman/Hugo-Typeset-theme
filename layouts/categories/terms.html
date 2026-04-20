@@ -1,0 +1,42 @@
+{{- define "main" -}}
+<section class="list-page main-content">
+    <header>
+        <h1>{{- .Title -}}</h1>
+        {{- with .Description -}}
+            <p>{{- . -}}</p>
+        {{- end -}}
+    </header>
+
+    <div class="categories-list">
+        {{- range .Data.Terms.Alphabetical -}}
+            {{- $termPage := .Page -}}
+            {{- $pages := $termPage.Pages.ByDate -}}
+            {{- $count := len $pages -}}
+            {{- if gt $count 0 -}}
+                {{- $earliest := (index $pages 0).Date -}}
+                {{- $latest := (index ($pages.Reverse) 0) -}}
+                <div class="category-row">
+                    <div class="category-row-main">
+                        <h2 class="category-row-title">
+                            <a href="{{ $termPage.RelPermalink }}">{{- $termPage.Title -}}</a>
+                        </h2>
+                        <span class="category-row-count">
+                            {{- $count -}}&nbsp;{{- if eq $count 1 -}}post{{- else -}}posts{{- end -}}
+                        </span>
+                        <span class="category-row-dates">
+                            {{- if eq $earliest.Year $latest.Date.Year -}}
+                                {{- $earliest.Format "2006" -}}
+                            {{- else -}}
+                                {{- $earliest.Format "2006" -}}–{{- $latest.Date.Format "2006" -}}
+                            {{- end -}}
+                        </span>
+                    </div>
+                    <div class="category-row-latest">
+                        Latest: <a href="{{- $latest.RelPermalink -}}"><em>{{- $latest.Title -}}</em></a>
+                    </div>
+                </div>
+            {{- end -}}
+        {{- end -}}
+    </div>
+</section>
+{{- end -}}

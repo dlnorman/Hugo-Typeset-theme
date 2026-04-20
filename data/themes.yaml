@@ -1,0 +1,53 @@
+- name: light
+  file: light.css
+  icon: "☀️"
+  label: Light
+
+- name: dark
+  file: dark.css
+  icon: "🌙"
+  label: Dark
+  fouc_bg: "#1a1a1a"
+  fouc_text: "#e0e0e0"
+
+- name: terminal
+  file: terminal.css
+  icon: "💻"
+  label: Terminal
+  fouc_bg: "#160803"
+  fouc_text: "#ffb000"
+
+# - name: midcentury
+#   file: midcentury.css
+#   icon: "✦"
+#   label: Mid-century
+#   fouc_bg: "#e8dfd0"
+#   fouc_text: "#2d2416"
+
+- name: 1-bit
+  file: 1bit.css
+  icon: "◑"
+  label: 1-bit
+  fouc_bg: "#fff"
+  fouc_text: "#000"
+
+# - name: foothills
+#   file: foothills.css
+#   icon: "⛰️"
+#   label: Foothills
+#   fouc_bg: "#a3d0d9"
+#   fouc_text: "#241514"
+
+# - name: "1975"
+#   file: seventies.css
+#   icon: "🪩"
+#   label: "1975"
+#   fouc_bg: "#0e1a3a"
+#   fouc_text: "#0a0a10"
+
+- name: newspaper
+  file: newspaper.css
+  icon: "📰"
+  label: Newspaper
+  fouc_bg: "#f2f1ee"
+  fouc_text: "#111110"

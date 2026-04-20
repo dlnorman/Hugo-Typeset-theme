@@ -15,13 +15,31 @@
             {{- if gt $count 0 -}}
                 {{- $earliest := (index $pages 0).Date -}}
                 {{- $latest := (index ($pages.Reverse) 0) -}}
-                <a href="{{ $termPage.RelPermalink }}" class="series-card">
-                    <div class="series-card-top">
-                        <h2 class="series-card-title">{{- $termPage.Title -}}</h2>
-                        <span class="series-card-count">
-                            {{- $count -}}&nbsp;{{- if eq $count 1 -}}post{{- else -}}posts{{- end -}}
-                        </span>
-                    </div>
+                <div class="series-card">
+                    <a href="{{ $termPage.RelPermalink }}" class="series-card-link">
+                        <div class="series-card-thumbnail">
+                            {{- with $termPage.Params.image -}}
+                            <img src="{{- . -}}" alt="{{- $termPage.Title -}}">
+                            {{- else -}}
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" aria-hidden="true" class="series-card-placeholder-svg">
+                                <rect x="98" y="42" width="88" height="108" rx="3" fill="none" stroke="currentColor" stroke-width="2" opacity="0.15"/>
+                                <rect x="106" y="34" width="88" height="108" rx="3" fill="none" stroke="currentColor" stroke-width="2" opacity="0.25"/>
+                                <rect x="114" y="26" width="88" height="108" rx="3" fill="var(--bg-secondary)" stroke="currentColor" stroke-width="2" opacity="0.5"/>
+                                <line x1="130" y1="50" x2="186" y2="50" stroke="currentColor" stroke-width="2" opacity="0.35"/>
+                                <line x1="130" y1="62" x2="186" y2="62" stroke="currentColor" stroke-width="2" opacity="0.35"/>
+                                <line x1="130" y1="74" x2="170" y2="74" stroke="currentColor" stroke-width="2" opacity="0.35"/>
+                                <line x1="130" y1="86" x2="178" y2="86" stroke="currentColor" stroke-width="2" opacity="0.35"/>
+                                <line x1="130" y1="98" x2="162" y2="98" stroke="currentColor" stroke-width="2" opacity="0.35"/>
+                            </svg>
+                            {{- end -}}
+                        </div>
+                        <div class="series-card-top">
+                            <h2 class="series-card-title">{{- $termPage.Title -}}</h2>
+                            <span class="series-card-count">
+                                {{- $count -}}&nbsp;{{- if eq $count 1 -}}post{{- else -}}posts{{- end -}}
+                            </span>
+                        </div>
+                    </a>
                     <div class="series-card-dates">
                         {{- if eq $earliest.Year $latest.Date.Year -}}
                             {{- $earliest.Format "2006" -}}
@@ -33,9 +51,15 @@
                     <div class="series-card-description">{{- . -}}</div>
                     {{- end -}}
                     <div class="series-card-latest">
-                        Latest: <em>{{- $latest.Title -}}</em>
+                        <span class="series-card-latest-post">Latest: <em>{{- $latest.Title -}}</em></span>
+                        {{- with $termPage.OutputFormats.Get "RSS" }}
+                        <a href="{{- .RelPermalink -}}" class="section-rss-link" title="Subscribe to this series via RSS">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12"><path d="M19.199 24C19.199 13.467 10.533 4.8 0 4.8V0c13.165 0 24 10.835 24 24h-4.801zM3.291 17.415a3.3 3.3 0 0 1 3.3 3.3 3.3 3.3 0 0 1-3.3 3.3 3.3 3.3 0 0 1-3.3-3.3 3.3 3.3 0 0 1 3.3-3.3zM15.909 24h-4.665c0-6.169-5.075-11.245-11.244-11.245V8.09c8.727 0 15.909 7.184 15.909 15.91z"/></svg>
+                            RSS feed
+                        </a>
+                        {{- end }}
                     </div>
-                </a>
+                </div>
             {{- end -}}
         {{- end -}}
     </div>

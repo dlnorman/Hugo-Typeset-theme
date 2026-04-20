@@ -34,6 +34,13 @@ html[data-theme="terminal"] {
 
     /* Override muted text to amber for terminal theme */
     --text-muted: #b27800;
+
+  /* Fonts */
+  --primary-font: var(--terminal-font); /*Inter, Helvetica, "Helvetica Neue", Arial, "Nimbus Sans L", sans-serif;*/
+  --header-font: var(--terminal-font); /*Helvetica, "Helvetica Neue", Arial, "Nimbus Sans L", sans-serif;*/
+  --code-font: 'JetBrains Mono', monospace;
+
+
 }
 
 /* Logo mark: exact amber colour via currentColor on inline SVG */
@@ -55,7 +62,7 @@ html[data-theme="terminal"] h3,
 html[data-theme="terminal"] h4,
 html[data-theme="terminal"] h5,
 html[data-theme="terminal"] h6 {
-    font-family: 'Departure', monospace;
+    font-family: var(--primary-font); /*'Departure', monospace;*/
 }
 
 /* Terminal Selection Style */

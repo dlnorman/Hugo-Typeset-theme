@@ -1,0 +1,14 @@
+{{- with .Site.Taxonomies.series -}}
+  <ul>
+    {{- range $name, $pages := . -}}
+      <li>
+        <a href="{{- "/series/" | relURL -}}{{- $name | urlize -}}/index.xml">
+          {{- $pages.Page.Title -}}
+        </a>
+        ({{- len $pages -}} {{- if eq (len $pages) 1 -}}&nbsp;post{{- else -}}&nbsp;posts{{- end -}})
+      </li>
+    {{- end -}}
+  </ul>
+{{- else -}}
+  <p>No series found.</p>
+{{- end -}}

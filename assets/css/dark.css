@@ -27,6 +27,12 @@ html[data-theme="dark"] {
 
     /* Enforce dark browser widgets */
     color-scheme: dark;
+    
+      /* Fonts */
+  --primary-font: Inter, Helvetica, "Helvetica Neue", Arial, "Nimbus Sans L", sans-serif;
+  --header-font: Helvetica, "Helvetica Neue", Arial, "Nimbus Sans L", sans-serif;
+  --code-font: 'JetBrains Mono', monospace;
+
 }
 
 /* Logo mark: near-white on dark background via currentColor on inline SVG */

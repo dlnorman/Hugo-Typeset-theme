@@ -15,11 +15,8 @@
         display: block !important;
     }
     /* Immediate background/colour for all themes to prevent flash before theme CSS loads */
-    html[data-theme="dark"] { background-color: #1a1a1a; color: #e0e0e0; }
-    html[data-theme="terminal"] { background-color: #160803; color: #ffb000; }
-    html[data-theme="midcentury"] { background-color: #e8dfd0; color: #2d2416; }
-    html[data-theme="1-bit"] { background-color: #fff; color: #000; }
-    html[data-theme="1975"] { background-color: #0e1a3a; color: #0a0a10; }
+    {{- range hugo.Data.themes }}{{ if .fouc_bg }}
+    html[data-theme="{{ .name }}"] { background-color: {{ .fouc_bg }}; color: {{ .fouc_text }}; }{{ end }}{{ end }}
     </style>
 
 	<meta name="fediverse:creator" content="@dnorman@cosocial.ca">
@@ -36,36 +33,12 @@
     {{- end }}
 
     <div class="container">
-        {{- partialCached "header.html" . .RelPermalink -}}
+        {{- partialCached "header.html" . .Section -}}
         <main id="main-content">
             {{ block "main" . }}{{ end }}
         </main>
         {{- partialCached "footer.html" . .RelPermalink -}}
     </div>
-    {{ $js := resources.Get "js/theme-switcher.js" | resources.Minify | resources.Fingerprint }}
-    <script src="{{ $js.RelPermalink }}"></script>
-
-	{{- if site.Params.showFlock }}
-		{{- $flockJS := resources.Get "js/flock.js" | resources.Minify | resources.Fingerprint -}}
-		<script>
-		if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-			var s = document.createElement('script');
-			s.src = "{{- $flockJS.RelPermalink -}}";
-			document.body.appendChild(s);
-		}
-		</script>
-	{{- end -}}
-
-	{{- if site.Params.enableCanvasAnimation }}
-		<!-- Canvas animation (retro particle background) -->
-		{{- $canvasJS := resources.Get "js/canvas-animation.js" | js.Build (dict "minify" true "format" "iife") | resources.Fingerprint -}}
-		<script>
-		if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-			var s = document.createElement('script');
-			s.src = "{{- $canvasJS.RelPermalink -}}";
-			document.body.appendChild(s);
-		}
-		</script>
-	{{- end -}}
+    {{- partialCached "js-bundle.html" "static" "static" -}}
 </body>
 </html>

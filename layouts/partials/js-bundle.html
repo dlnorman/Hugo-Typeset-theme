@@ -1,0 +1,25 @@
+{{- $js := resources.Get "js/theme-switcher.js" | resources.Minify | resources.Fingerprint -}}
+<script src="{{ $js.RelPermalink }}"></script>
+
+{{- if site.Params.showFlock }}
+	{{- $flockJS := resources.Get "js/flock.js" | resources.Minify | resources.Fingerprint -}}
+	<script>
+	if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		var s = document.createElement('script');
+		s.src = "{{- $flockJS.RelPermalink -}}";
+		document.body.appendChild(s);
+	}
+	</script>
+{{- end -}}
+
+{{- if site.Params.enableCanvasAnimation }}
+	<!-- Canvas animation (retro particle background) -->
+	{{- $canvasJS := resources.Get "js/canvas-animation.js" | js.Build (dict "minify" true "format" "iife") | resources.Fingerprint -}}
+	<script>
+	if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		var s = document.createElement('script');
+		s.src = "{{- $canvasJS.RelPermalink -}}";
+		document.body.appendChild(s);
+	}
+	</script>
+{{- end -}}

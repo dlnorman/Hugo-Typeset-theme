@@ -2,7 +2,7 @@
 <article class="single-content">
   <div class="content-header">
 	<h1>External Links</h1>
-	<p>Links to websites from the 20 most recent posts.</p>
+	<p>Links to websites from the 20 most recent posts (excluding Linkblog posts).</p>
   </div>
 
   
@@ -10,7 +10,7 @@
 {{ $grouped := slice }}
 {{ $siteDomain := "darcynorman.net" }}
 
-{{ range .Site.RegularPages }}
+{{ range where .Site.RegularPages "Section" "!=" "links" }}
   {{ $page := . }}
   {{ $foundLinks := slice }}
   

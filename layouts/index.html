@@ -1,36 +1,155 @@
 {{ define "main" }}
-<section class="homepage">
-<!-- 
-    <div class="intro">
-        <h1>{{ .Site.Title }}</h1>
-        {{ with .Site.Params.description }}
-            <p>{{ . }}</p>
-        {{ end }}
-    </div>
- -->
+<section class="homepage homepage-masthead">
 
+  {{- /* Masthead intro: pulls from content/_index.md (bio + portrait) */ -}}
   {{- if .Content -}}
-    <div class="home-page-content intro">
+    <div class="home-page-content intro home-masthead">
       {{- .Content -}}
     </div>
   {{- end -}}
 
-    <div class="content-grid-full">
-        <!-- First column (1/3 width) -->
-<!-- 
-        <div class="grid-item">
-            <h2>Latest Photos</h2>
-            {{ partial "latest-photos.html" . }}
-        </div>
- -->
-        
-        <!-- Second column (2/3 width) with both posts and asides -->
-        <div class="full-column">
-            <div class="grid-item">
-                {{ partial "latest-posts-cards.html" . }}
-            </div>
-            
-        </div>
+  {{- /* Wayfinding: prominent entry points to Sections and Series */ -}}
+  <nav class="home-wayfinding" aria-label="Browse the site">
+    <a class="home-wayfinding-item" href="/sections/">
+      <span class="home-wayfinding-label">Sections</span>
+      <span class="home-wayfinding-arrow" aria-hidden="true">&rarr;</span>
+    </a>
+    <a class="home-wayfinding-item" href="/series/">
+      <span class="home-wayfinding-label">Series</span>
+      <span class="home-wayfinding-arrow" aria-hidden="true">&rarr;</span>
+    </a>
+  </nav>
+
+  {{- /* Resolve featured post: Params.featured wins, else most recent */ -}}
+  {{- $mainPosts := where site.RegularPages "Type" "in" site.Params.mainSections -}}
+  {{- $featuredMatches := where $mainPosts "Params.featured" true -}}
+  {{- $featured := "" -}}
+  {{- $useOverride := false -}}
+  {{- if $featuredMatches -}}
+    {{- $featured = index $featuredMatches 0 -}}
+    {{- $useOverride = true -}}
+  {{- else if $mainPosts -}}
+    {{- $featured = index $mainPosts 0 -}}
+  {{- end -}}
+
+  {{- with $featured }}
+  <article class="home-featured">
+    {{- $img := .Params.image -}}
+    {{- if not $img -}}
+      {{- $htmlImages := findRE `<img[^>]+src=["']([^"']+)["']` .Content 1 -}}
+      {{- if $htmlImages -}}
+        {{- $img = replaceRE `.*src=["']([^"']+)["'].*` "$1" (index $htmlImages 0) -}}
+      {{- end -}}
+    {{- end -}}
+    {{- with $img }}
+    <a class="home-featured-image" href="{{ $featured.RelPermalink }}" aria-hidden="true" tabindex="-1">
+      <img src="{{ . }}" alt="" loading="eager" width="720" height="480">
+    </a>
+    {{- end }}
+    <div class="home-featured-body">
+      <span class="home-eyebrow">{{ if $useOverride }}Featured{{ else }}Latest post{{ end }}</span>
+      <h2 class="home-featured-title">
+        <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+      </h2>
+      <div class="home-featured-meta">
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+        {{- if .ReadingTime }}<span aria-hidden="true"> · </span><span>{{ .ReadingTime }} min read</span>{{ end -}}
+      </div>
+      {{- with .Summary }}
+      <p class="home-featured-summary">{{ . | plainify | truncate 260 }}</p>
+      {{- end }}
     </div>
+  </article>
+  {{ end }}
+
+  {{- /* Stream: main posts minus the one already featured */ -}}
+  {{- $stream := $mainPosts -}}
+  {{- if $featured -}}
+    {{- if $useOverride -}}
+      {{- $stream = where $mainPosts "RelPermalink" "ne" $featured.RelPermalink -}}
+    {{- else -}}
+      {{- $stream = after 1 $mainPosts -}}
+    {{- end -}}
+  {{- end -}}
+
+  <div class="home-body">
+    <div class="home-main">
+      <h2 class="home-section-heading"><a href="/archives/">Latest Posts</a></h2>
+      <ol class="home-stream">
+        {{- range first 8 $stream }}
+        <li class="home-stream-item">
+          <time class="home-stream-date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time>
+          <h3 class="home-stream-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+          {{- with .Summary }}
+          <p class="home-stream-dek">{{ . | plainify | truncate 180 }}</p>
+          {{- end }}
+        </li>
+        {{- end }}
+      </ol>
+      <p class="home-more"><a href="/archives/">More posts &rarr;</a></p>
+    </div>
+
+    <aside class="home-sidebar">
+      {{- $photos := where site.RegularPages "Section" "photos" -}}
+      {{- with index $photos 0 }}
+      <section class="sidebar-block sidebar-photo">
+        <h2 class="sidebar-heading"><a href="/photos/">Latest photo</a></h2>
+        {{- $pImg := .Params.image -}}
+        {{- if not $pImg -}}
+          {{- $m := findRE `<img[^>]+src=["']([^"']+)["']` .Content 1 -}}
+          {{- if $m -}}{{- $pImg = replaceRE `.*src=["']([^"']+)["'].*` "$1" (index $m 0) -}}{{- end -}}
+        {{- end -}}
+        <a href="{{ .RelPermalink }}">
+          {{- with $pImg }}
+          <img src="{{ . }}" alt="" loading="lazy">
+          {{- end }}
+          <span class="sidebar-photo-title">{{ .Title }}</span>
+        </a>
+      </section>
+      {{- end }}
+
+      {{- $startHere := where $mainPosts "Params.start_here" true -}}
+      {{- if $startHere }}
+      <section class="sidebar-block sidebar-starthere">
+        <h2 class="sidebar-heading">Start here</h2>
+        <ul>
+          {{- range first 5 $startHere }}
+          <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+          {{- end }}
+        </ul>
+      </section>
+      {{- end }}
+
+      {{- $asides := where site.RegularPages "Type" "asides" -}}
+      {{- if $asides }}
+      <section class="sidebar-block sidebar-asides">
+        <h2 class="sidebar-heading"><a href="/asides/">Asides</a></h2>
+        <ul>
+          {{- range first 4 $asides }}
+          <li>
+            <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+            <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time>
+          </li>
+          {{- end }}
+        </ul>
+      </section>
+      {{- end }}
+
+      {{- $links := where site.RegularPages "Section" "links" -}}
+      {{- if $links }}
+      <section class="sidebar-block sidebar-links">
+        <h2 class="sidebar-heading"><a href="/links/">Recent links</a></h2>
+        <ul>
+          {{- range first 3 $links }}
+          <li>
+            <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+            <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time>
+          </li>
+          {{- end }}
+        </ul>
+      </section>
+      {{- end }}
+    </aside>
+  </div>
 </section>
 {{ end }}

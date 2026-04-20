@@ -1,0 +1,96 @@
+/* Newspaper Theme — System Fonts only
+   No external font requests. Works offline. No GDPR/privacy implications.
+*/
+
+html[data-theme="newspaper"] {
+
+  /* ─── Typography Scale ──────────────────────────────── */
+  --font-size-base: 17px;
+  --font-scale: 1.333;
+  --font-size-sm: calc(var(--font-size-base) / var(--font-scale));
+  --font-size-md: var(--font-size-base);
+  --font-size-lg: calc(var(--font-size-base) * var(--font-scale));
+  --font-size-xl: calc(var(--font-size-base) * var(--font-scale) * var(--font-scale));
+  --font-size-xxl: calc(var(--font-size-base) * var(--font-scale) * var(--font-scale) * var(--font-scale));
+
+  /* ─── Line Heights ──────────────────────────────────── */
+  --line-height-extra-tight: 1;
+  --line-height-tight: 1.15;
+  --line-height-normal: 1.55;
+  --line-height-loose: 1.8;
+
+  /* ─── Spacing ───────────────────────────────────────── */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 4rem;
+
+  /* ─── Layout ────────────────────────────────────────── */
+--container-padding: var(--space-md);
+  --border-radius: 0px;
+
+  /* ─── Transitions ───────────────────────────────────── */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-speed: 0.25s;
+
+  /* ─── Colours ───────────────────────────────────────── */
+  --page-bg-colour:    #d4d4d0;
+  --bg-colour:         #f2f1ee;
+  --text-colour:       #111110;
+  --text-colour-light: #444442;
+  --link-colour:       #111110;
+  --link-hover-colour: #1a1a18;
+  --accent-colour:     #2a2a28;
+  --border-colour:     #aaaaaa;
+  --hover-bg-colour:   #e4e3e0;
+  --code-bg-colour:    #e4e3e0;
+
+  --nav-link-colour:       #111110;
+  --nav-link-hover-colour: #111110;
+  --dropdown-bg-colour:    #f2f1ee;
+
+  --tag-bg-colour:   #e0dfdc;
+  --tag-text-colour: #333332;
+
+  --bg-secondary:  #e4e3e0;
+  --text-secondary: #444442;
+  --border-color:  #aaaaaa;
+  --accent-color:  #2a2a28;
+
+  --terminal-font:  "Courier New", Courier, monospace;
+  --terminal-green: #2d6a2d;
+  --amber-text:     #8b6914;
+
+  /* ─── Fonts ─────────────────────────────────────────── */
+
+  /*
+    Body — Palatino (Hermann Zapf, 1949; pre-installed macOS/iOS/Windows)
+    Falls back through Palatino Linotype → Book Antiqua → Georgia → Times New Roman
+  */
+  --primary-font: Palatino, "Palatino Linotype", "Book Antiqua",
+                  Georgia, "Times New Roman", serif;
+
+  /*
+    Headlines — high-contrast display serifs, platform-tiered:
+      macOS/iOS  → Big Caslon (ships with macOS; strong thick/thin contrast)
+      macOS alt  → Didot (elegant, magazine-grade; macOS only)
+      Windows    → Bodoni MT (classic Bodoni; ships with Office/Windows)
+      Windows alt→ "Hoefler Text" rarely on Windows, but harmless in stack
+      Universal  → Georgia, then Times New Roman
+  */
+  --header-font: "Big Caslon", Didot, "Bodoni MT", "Hoefler Text",
+                 Georgia, "Times New Roman", serif;
+
+  /*
+    Code — Courier New ships everywhere; classic wire-service / teletype feel
+  */
+  --code-font: "Courier New", Courier, monospace;
+}
+
+html[data-theme="newspaper"] .photo-title,
+html[data-theme="newspaper"] .photo-overlay time {
+  color: #ffffff !important;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8) !important;
+}

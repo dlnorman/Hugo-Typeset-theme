@@ -418,6 +418,21 @@
             });
         }
 
+        sectionLabel(section) {
+            const labels = {
+                'links': 'Linkblog',
+                'posts': 'Posts',
+                'photos': 'Photos',
+                'photo': 'Photos',
+                'reflections': 'Reflections',
+                'asides': 'Asides',
+                'notes': 'Notes',
+                'podcast': 'Podcast',
+                'page': 'Pages',
+            };
+            return labels[section] || (section.charAt(0).toUpperCase() + section.slice(1));
+        }
+
         async loadSections() {
             try {
                 const response = await fetch(`${this.apiUrl}?action=sections`);
@@ -427,7 +442,7 @@
                     data.sections.forEach(section => {
                         const option = document.createElement('option');
                         option.value = section;
-                        option.textContent = section.charAt(0).toUpperCase() + section.slice(1);
+                        option.textContent = this.sectionLabel(section);
                         this.sectionFilter.appendChild(option);
                     });
                 }
@@ -534,10 +549,28 @@
             this.renderPagination(data);
         }
 
+        sectionIcon(section) {
+            const icons = {
+                'posts': '📰',
+                'photos': '📸',
+                'photo': '📸',
+                'reflections': '🤔',
+                'asides': '📝',
+                'notes': '📓',
+                'podcast': '🎙️',
+                'links': '🔗',
+                'page': '📄',
+            };
+            return icons[section] || '';
+        }
+
         renderResult(result) {
             const tags = Array.isArray(result.tags) ? result.tags : [];
             const tagsHtml = tags.length > 0 ?
                 `<div class="result-tags">${tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>` : '';
+
+            const icon = this.sectionIcon(result.section);
+            const label = result.section ? this.sectionLabel(result.section) : '';
 
             return `
             <div class="search-result">
@@ -545,7 +578,7 @@
                     <a href="${result.url}">${result.title_highlighted || result.title}</a>
                 </div>
                 <div class="result-meta">
-                    ${result.section ? result.section + ' • ' : ''}${result.date}
+                    ${label ? icon + '&nbsp;' + label + ' • ' : ''}${result.date}
                 </div>
                 <div class="result-summary">
                     ${result.summary_highlighted || result.content_snippet || result.summary || ''}
